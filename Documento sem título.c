@@ -1,5 +1,5 @@
 int main(){
 
-    int teste;
+    int master, teste, str;
 
 }
