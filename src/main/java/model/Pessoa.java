@@ -9,21 +9,17 @@ import org.json.JSONObject;
 
 public abstract class Pessoa implements JSONTransform{
     private long idDatabase;
-    private String cpf, nome, escolaridade, profissao;
-    private RG rg;
+    private String cpf, nome;
     private Date dtNascimento;
     private String email;
     private Telefone fone;
     private Endereco endereco;
 
-    public Pessoa(long idDatabase, String cpf, String nome, String escolaridade, String profissao, RG rg, 
-                        Date dtNascimento, String email, Telefone fone, Endereco endereco) {
+    public Pessoa(long idDatabase, String cpf, String nome, Date dtNascimento, String email, 
+            Telefone fone, Endereco endereco) {
         this.idDatabase = idDatabase;
         this.cpf = cpf;
         this.nome = nome;
-        this.escolaridade = escolaridade;
-        this.profissao = profissao;
-        this.rg = rg;
         this.dtNascimento = dtNascimento;
         this.email = email;
         this.fone = fone;
@@ -38,9 +34,6 @@ public abstract class Pessoa implements JSONTransform{
         this.idDatabase = j.getLong("id");
         this.cpf = j.getString("cpf");
         this.nome = j.getString("nome");
-        this.escolaridade = j.getString("escolaridade");
-        this.profissao = j.getString("profissao");
-        this.rg = new RG(j.get("rg").toString());
         
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         try {
@@ -69,30 +62,6 @@ public abstract class Pessoa implements JSONTransform{
 
     public void setNome(String nome) {
         this.nome = nome;
-    }
-
-    public String getEscolaridade() {
-        return escolaridade;
-    }
-
-    public void setEscolaridade(String escolaridade) {
-        this.escolaridade = escolaridade;
-    }
-
-    public String getProfissao() {
-        return profissao;
-    }
-
-    public void setProfissao(String profissao) {
-        this.profissao = profissao;
-    }
-
-    public RG getRg() {
-        return rg;
-    }
-
-    public void setRg(RG rg) {
-        this.rg = rg;
     }
 
     public Date getDtNascimento() {
@@ -138,7 +107,6 @@ public abstract class Pessoa implements JSONTransform{
     @Override
     public String toString() {
         return "Pessoa{" + "idDatabase=" + idDatabase + ", cpf=" + cpf + ", nome=" + nome + 
-                ", escolaridade=" + escolaridade + ", profissao=" + profissao + ", rg=" + rg + 
                 ", dtNascimento=" + dtNascimento + ", email=" + email + ", fone=" + fone + 
                 ", endereco=" + endereco + '}';
     }
@@ -150,9 +118,6 @@ public abstract class Pessoa implements JSONTransform{
         json.put("id", idDatabase);
         json.put("cpf", cpf);
         json.put("nome", nome);
-        json.put("escolaridade", escolaridade);
-        json.put("profissao", profissao);
-        json.put("rg", rg.toJson());
         
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         json.put("dtNascimento", sdf.format(dtNascimento));
