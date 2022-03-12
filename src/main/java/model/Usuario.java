@@ -1,5 +1,10 @@
 package model;
 
+import java.math.BigInteger;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import org.json.JSONObject;
 
 public class Usuario implements JSONTransform{
@@ -8,7 +13,7 @@ public class Usuario implements JSONTransform{
 
     public Usuario(String cpf, String senha, String token, TipoUsuario tipo) {
         this.cpf = cpf;
-        this.senha = senha;
+        this.senha = criptografar(senha);
         this.token = token;
         this.tipo = tipo;
     }
@@ -18,7 +23,7 @@ public class Usuario implements JSONTransform{
     public Usuario(String json){
         JSONObject o = new JSONObject(json);
         this.cpf = o.getString("cpf");
-        this.senha = o.getString("senha");
+        this.senha = criptografar(o.getString("senha"));
         this.token = o.getString("token");
         this.tipo = TipoUsuario.getByInt(o.getInt("tipo"));
     }
@@ -36,7 +41,7 @@ public class Usuario implements JSONTransform{
     }
 
     public void setSenha(String senha) {
-        this.senha = senha;
+        this.senha = criptografar(senha);
     }
 
     public String getToken() {
@@ -65,6 +70,18 @@ public class Usuario implements JSONTransform{
         o.put("tipo", getTipo().getValue());
         
         return o;
+    }
+    
+    private String criptografar(String s){
+       MessageDigest m;
+        try {
+            m = MessageDigest.getInstance("MD5");
+            m.update(s.getBytes(), 0, s.length());
+            return new BigInteger(1, m.digest()).toString(16);
+        } catch (NoSuchAlgorithmException ex) {
+            Logger.getLogger(Usuario.class.getName()).log(Level.SEVERE, null, ex);
+            return null;
+        }
     }
     
     public enum TipoUsuario implements JSONTransform{
