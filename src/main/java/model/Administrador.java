@@ -26,6 +26,22 @@ public class Administrador extends Pessoa{
         this.dtAdmissao = new SimpleDateFormat("dd/MM/yyyy").parse(o.getString("dtAdmissao"));
         this.cargo = o.getString("cargo");
     }
+
+    public String getCargo() {
+        return cargo;
+    }
+
+    public void setCargo(String cargo) {
+        this.cargo = cargo;
+    }
+
+    public Date getDtAdmissao() {
+        return dtAdmissao;
+    }
+
+    public void setDtAdmissao(Date dtAdmissao) {
+        this.dtAdmissao = dtAdmissao;
+    }
     
     @Override
     public JSONObject toJson() {
