@@ -71,8 +71,6 @@ public class ClienteDAO implements CRUD<Cliente, String>{
                                 
                 closeStatementAndResultSet(null, st);
                 return true;
-            }else if(pessoaIsInDatabase(dados.getCpf())){
-                
             }
         } catch (SQLException ex) {
             SQL_ERROR_LOG.message("Error in Insert Cliente!", ex);
@@ -103,7 +101,7 @@ public class ClienteDAO implements CRUD<Cliente, String>{
     public Cliente read(String cpf) {
         String sql = "SELECT * FROM pessoas "
                     + "INNER JOIN clientes "
-                    + "ON pessoas.id = clientes.idCliente "
+                    + "ON pessoas.id = clientes.idPessoa "
                     + "WHERE cpf='" + cpf +"'";
         
         try {            
@@ -197,7 +195,9 @@ public class ClienteDAO implements CRUD<Cliente, String>{
 
     @Override
     public ArrayList<Cliente> list() {
-        String sql = "SELECT * FROM clientes";
+        String sql = "SELECT * FROM pessoas "
+                    + "INNER JOIN clientes "
+                    + "ON pessoas.id = clientes.idPessoa ";
         
         try {
             Statement st = con.createStatement();

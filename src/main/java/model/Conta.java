@@ -6,15 +6,17 @@ import java.util.Date;
 import org.json.JSONObject;
 
 public class Conta implements JSONTransform{
-    private long agencia;
-    private long numeroConta;
+    private String agencia;
+    private String numeroConta;
     private String cpfTitular;
     private Date dtCreation;
     private double saldo;
+    private long idConta;
     
     public Conta(){}
     
-    public Conta(int agencia, int numeroConta, String cpfTitular){
+    public Conta(long id, String agencia, String numeroConta, String cpfTitular){
+        this.idConta = id;
         this.agencia = agencia;
         this.numeroConta = numeroConta;
         this.cpfTitular = cpfTitular;
@@ -26,24 +28,25 @@ public class Conta implements JSONTransform{
         JSONObject j = new JSONObject(json);
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         
-        this.agencia = j.getLong("agencia");
-        this.numeroConta = j.getLong("numeroConta");
+        this.agencia = j.getString("agencia");
+        this.numeroConta = j.getString("numeroConta");
         this.cpfTitular = j.getString("cpfTitular");
         this.saldo = j.getDouble("saldo");
         this.dtCreation = sdf.parse(j.getString("dtCreation"));
+        this.idConta = j.getLong("idConta");
     }
     
     //Metodos getters and setters
-    public long getAgencia() {
+    public String getAgencia() {
         return agencia;
     }
-    public void setAgencia(long agencia) {
+    public void setAgencia(String agencia) {
         this.agencia = agencia;
     }
-    public long getNumeroConta() {
+    public String getNumeroConta() {
         return numeroConta;
     }
-    public void setNumeroConta(long numeroConta) {
+    public void setNumeroConta(String numeroConta) {
         this.numeroConta = numeroConta;
     }
     public double getSaldo() {
@@ -63,6 +66,12 @@ public class Conta implements JSONTransform{
     }
     public void setDateCreation(Date dtCreation) {
         this.dtCreation = dtCreation;
+    }
+    public long getIdConta() {
+        return idConta;
+    }
+    public void setIdConta(long idConta) {
+        this.idConta = idConta;
     }
     
     //Transações
@@ -105,6 +114,7 @@ public class Conta implements JSONTransform{
         json.put("numeroConta", getNumeroConta());
         json.put("cpfTitular", getCpfTitular());
         json.put("saldo", getSaldo());
+        json.put("idConta", getIdConta());
         
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         json.put("dtCreation", sdf.format(getDateCreation()));

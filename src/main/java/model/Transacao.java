@@ -6,12 +6,14 @@ import java.util.Date;
 import org.json.JSONObject;
 
 public class Transacao implements JSONTransform {
+    private long idTransacao;
     private Conta from, to;
     private TipoTransacao tipo;
     private double valMovimentado;
     private Date dtMovimento;
 
-    public Transacao(Conta from, Conta to, TipoTransacao tipo, double valMovimentado, Date dtMovimento) {
+    public Transacao(long idTransacao, Conta from, Conta to, TipoTransacao tipo, double valMovimentado, Date dtMovimento) {
+        this.idTransacao = idTransacao;
         this.from = from;
         this.to = to;
         this.tipo = tipo;
@@ -31,7 +33,7 @@ public class Transacao implements JSONTransform {
         this.tipo = TipoTransacao.getByInt(j.getInt("tipo"));
         this.valMovimentado = j.getDouble("valMovimentado");
         this.dtMovimento = sdf.parse(j.getString("dtMovimento"));
-        
+        this.idTransacao = j.getLong("idTransacao");
     }
     
     public Conta getFrom() {
@@ -64,7 +66,13 @@ public class Transacao implements JSONTransform {
     public void setDtMovimento(Date dtMovimento) {
         this.dtMovimento = dtMovimento;
     }
-
+    public long getIdTransacao() {
+        return idTransacao;
+    }
+    public void setIdTransacao(long idTransacao) {
+        this.idTransacao = idTransacao;
+    }
+    
     @Override
     public String toString() {
         return "Transacao{" + "from=" + from + ", to=" + to + ", tipo=" + tipo + ", valMovimentado=" + valMovimentado + 
@@ -79,7 +87,7 @@ public class Transacao implements JSONTransform {
         json.put("to", getTo().toJson());
         json.put("tipo", getTipo().getValue());
         json.put("valMovimentado", getValMovimentado());
-        
+        json.put("idTransacao", getIdTransacao());
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         json.put("dtMovimento", sdf.format(getDtMovimento()));
         

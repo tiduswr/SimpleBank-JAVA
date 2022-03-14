@@ -72,8 +72,6 @@ public class AdministradorDAO implements CRUD<Administrador, String>{
                                 
                 closeStatementAndResultSet(null, st);
                 return true;
-            }else if(pessoaIsInDatabase(dados.getCpf())){
-                
             }
         } catch (SQLException ex) {
             SQL_ERROR_LOG.message("Error in Insert Administrador!", ex);
@@ -104,7 +102,7 @@ public class AdministradorDAO implements CRUD<Administrador, String>{
     public Administrador read(String cpf) {
         String sql = "SELECT * FROM pessoas "
                     + "INNER JOIN administradores "
-                    + "ON pessoas.id = administradores.idAdm "
+                    + "ON pessoas.id = administradores.idPessoa "
                     + "WHERE cpf='" + cpf +"'";
         
         try {            
@@ -199,7 +197,9 @@ public class AdministradorDAO implements CRUD<Administrador, String>{
 
     @Override
     public ArrayList<Administrador> list() {
-        String sql = "SELECT * FROM administradores";
+        String sql = "SELECT * FROM pessoas "
+                    + "INNER JOIN administradores "
+                    + "ON pessoas.id = administradores.idPessoa ";
         
         try {
             Statement st = con.createStatement();
