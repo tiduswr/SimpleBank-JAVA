@@ -88,8 +88,7 @@ public class Transacao implements JSONTransform {
         json.put("tipo", getTipo().getValue());
         json.put("valMovimentado", getValMovimentado());
         json.put("idTransacao", getIdTransacao());
-        SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
-        json.put("dtMovimento", sdf.format(getDtMovimento()));
+        json.put("dtMovimento", new SimpleDateFormat("dd/MM/yyyy").format(getDtMovimento()));
         
         return json;
     }

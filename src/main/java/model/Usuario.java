@@ -8,13 +8,12 @@ import java.util.logging.Logger;
 import org.json.JSONObject;
 
 public class Usuario implements JSONTransform{
-    private String cpf, senha, token;
+    private String cpf, senha;
     private TipoUsuario tipo;
 
-    public Usuario(String cpf, String senha, String token, TipoUsuario tipo) {
+    public Usuario(String cpf, String senha, TipoUsuario tipo) {
         this.cpf = cpf;
         this.senha = criptografar(senha);
-        this.token = token;
         this.tipo = tipo;
     }
     
@@ -24,7 +23,6 @@ public class Usuario implements JSONTransform{
         JSONObject o = new JSONObject(json);
         this.cpf = o.getString("cpf");
         this.senha = criptografar(o.getString("senha"));
-        this.token = o.getString("token");
         this.tipo = TipoUsuario.getByInt(o.getInt("tipo"));
     }
 
@@ -44,14 +42,6 @@ public class Usuario implements JSONTransform{
         this.senha = criptografar(senha);
     }
 
-    public String getToken() {
-        return token;
-    }
-
-    public void setToken(String token) {
-        this.token = token;
-    }
-
     public TipoUsuario getTipo() {
         return tipo;
     }
@@ -66,7 +56,6 @@ public class Usuario implements JSONTransform{
         
         o.put("cpf", getCpf());
         o.put("senha", getSenha());
-        o.put("token", getToken());
         o.put("tipo", getTipo().getValue());
         
         return o;
