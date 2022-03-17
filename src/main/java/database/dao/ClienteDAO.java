@@ -45,7 +45,6 @@ public class ClienteDAO implements CRUD<Cliente, String>{
     private String createSqlCliente(String sql, Cliente dados){
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         sql = sql.replaceFirst("<T>", sdf.format(dados.getDtCadastro()));
-        sql = sql.replaceFirst("<T>", String.valueOf(dados.getIdDatabase()));
         if(dados.isActive()){
             sql = sql.replaceFirst("<T>", "1");
         }else{
@@ -60,19 +59,22 @@ public class ClienteDAO implements CRUD<Cliente, String>{
         Cliente find = read(dados.getCpf());
         String sqlPessoa = "INSERT INTO pessoas (cpf, nome, dtNascimento, email, bairro, cidade, estado, "
                 + "numCasa, rua, dddTelefone, numeroTelefone) " 
-                + "VALUES ('<T>', '<T>', '<T>', '<T>', '<T>', '<T>', <T>, '<T>', <T>, '<T>', <T>)";
-        String sqlCliente= "INSERT INTO clientes (dtCadastro, idPessoa, active) " 
+                + "VALUES ('<T>', '<T>', '<T>', '<T>', '<T>', '<T>', '<T>', <T>, '<T>', <T>, '<T>')";
+        String sqlCliente= "INSERT INTO clientes (dtCadastro, active, idPessoa) " 
                 + "VALUES ('<T>', <T>, <T>)";
         try {
             if(find == null){
                 Statement st = con.createStatement();
+                long idPessoa = getIdPessoa(dados.getCpf());
                 
-                if(!pessoaIsInDatabase(dados.getCpf())){
+                if(idPessoa == -1){
                     sqlPessoa = createSqlPessoa(sqlPessoa, dados);
                     st.execute(sqlPessoa);
+                    idPessoa = getIdPessoa(dados.getCpf());
                 }
                 
                 sqlCliente = createSqlCliente(sqlCliente, dados);
+                sqlCliente = sqlCliente.replaceFirst("<T>", String.valueOf(idPessoa));
                 st.execute(sqlCliente);
                                 
                 closeStatementAndResultSet(null, st);
@@ -84,7 +86,7 @@ public class ClienteDAO implements CRUD<Cliente, String>{
         return false;
     }
     
-    private boolean pessoaIsInDatabase(String cpf){
+    private long getIdPessoa(String cpf){
         String sql = "SELECT * FROM pessoas WHERE cpf='" + cpf +"'";
         
         try {            
@@ -93,14 +95,14 @@ public class ClienteDAO implements CRUD<Cliente, String>{
             ResultSet rs = st.executeQuery(sql);
 
             if(rs != null && !rs.isClosed()){
-                return true;
+                return rs.getLong("id");
             }
             
             closeStatementAndResultSet(rs, st);
         } catch (SQLException ex) {
             SQL_ERROR_LOG.message("Error in read Pessoa!", ex);
         }
-        return false;
+        return -1;
     }
     
     @Override
@@ -131,8 +133,8 @@ public class ClienteDAO implements CRUD<Cliente, String>{
                 
                 Endereco e = new Endereco();
                 e.setBairro(rs.getString("bairro"));
-                e.setCidade("cidade");
-                e.setEstado("estado");
+                e.setCidade(rs.getString("cidade"));
+                e.setEstado(rs.getString("estado"));
                 e.setNumCasa(rs.getInt("numCasa"));
                 e.setRua(rs.getString("rua"));
                 
