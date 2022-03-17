@@ -46,6 +46,12 @@ public class ClienteDAO implements CRUD<Cliente, String>{
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         sql = sql.replaceFirst("<T>", sdf.format(dados.getDtCadastro()));
         sql = sql.replaceFirst("<T>", String.valueOf(dados.getIdDatabase()));
+        if(dados.isActive()){
+            sql = sql.replaceFirst("<T>", "1");
+        }else{
+            sql = sql.replaceFirst("<T>", "0");
+        }
+        
         return sql;
     }
     
@@ -54,9 +60,9 @@ public class ClienteDAO implements CRUD<Cliente, String>{
         Cliente find = read(dados.getCpf());
         String sqlPessoa = "INSERT INTO pessoas (cpf, nome, dtNascimento, email, bairro, cidade, estado, "
                 + "numCasa, rua, dddTelefone, numeroTelefone) " 
-                + "VALUES ('<T>', '<T>', '<T>', '<T>', '<T>', '<T>', <T>, '<T>', <T>, '<T>')";
-        String sqlCliente= "INSERT INTO clientes (dtCadastro, idPessoa) " 
-                + "VALUES ('<T>', <T>)";
+                + "VALUES ('<T>', '<T>', '<T>', '<T>', '<T>', '<T>', <T>, '<T>', <T>, '<T>', <T>)";
+        String sqlCliente= "INSERT INTO clientes (dtCadastro, idPessoa, active) " 
+                + "VALUES ('<T>', <T>, <T>)";
         try {
             if(find == null){
                 Statement st = con.createStatement();
@@ -149,17 +155,26 @@ public class ClienteDAO implements CRUD<Cliente, String>{
         
         return null;
     }
-
+    
     @Override
     public boolean update(Cliente dados) {
         String sql = "UPDATE pessoas SET cpf='<T>', nome='<T>', dtNascimento='<T>', email='<T>', bairro='<T>', "
                 + "cidade='<T>', estado='<T>', numCasa=<T>, rua='<T>', dddTelefone=<T>, numeroTelefone='<T>'"
                 + " WHERE id=" + String.valueOf(dados.getIdDatabase());
+        String sqlClientes = "UPDATE clientes SET active=<T> WHERE idPessoa=" + String.valueOf(dados.getIdDatabase());
         
         try {
             sql = createSqlPessoa(sql ,dados);
             Statement st = con.createStatement();
             st.execute(sql);
+            
+            if(dados.isActive()){
+                sqlClientes = sqlClientes.replaceFirst("<T>", "1");
+            }else{
+                sqlClientes = sqlClientes.replaceFirst("<T>", "0");
+            }
+            st.execute(sqlClientes);
+            
             closeStatementAndResultSet(null, st);
             
             Cliente teste = read(dados.getCpf());
@@ -170,7 +185,7 @@ public class ClienteDAO implements CRUD<Cliente, String>{
         
         return false;
     }
-
+    
     @Override
     public boolean delete(String cpf) {
         Cliente find = read(cpf);

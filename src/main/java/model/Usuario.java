@@ -10,8 +10,10 @@ import org.json.JSONObject;
 public class Usuario implements JSONTransform{
     private String cpf, senha;
     private TipoUsuario tipo;
-
-    public Usuario(String cpf, String senha, TipoUsuario tipo) {
+    private long id;
+    
+    public Usuario(long id, String cpf, String senha, TipoUsuario tipo) {
+        this.id = id;
         this.cpf = cpf;
         this.senha = criptografar(senha);
         this.tipo = tipo;
@@ -21,6 +23,7 @@ public class Usuario implements JSONTransform{
     
     public Usuario(String json){
         JSONObject o = new JSONObject(json);
+        this.id = o.getLong("idUser");
         this.cpf = o.getString("cpf");
         this.senha = criptografar(o.getString("senha"));
         this.tipo = TipoUsuario.getByInt(o.getInt("tipo"));
@@ -50,6 +53,14 @@ public class Usuario implements JSONTransform{
         this.tipo = tipo;
     }
 
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     @Override
     public JSONObject toJson() {
         JSONObject o = new JSONObject();
@@ -57,6 +68,7 @@ public class Usuario implements JSONTransform{
         o.put("cpf", getCpf());
         o.put("senha", getSenha());
         o.put("tipo", getTipo().getValue());
+        o.put("idUser", getId());
         
         return o;
     }
