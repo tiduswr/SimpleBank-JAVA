@@ -5,19 +5,19 @@ import database.DatabaseConnect;
 import database.SQLiteConnection;
 import java.util.ArrayList;
 import java.util.Date;
-import model.Cliente;
+import model.Administrador;
 import model.Endereco;
 import model.Telefone;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class ClienteDAOTest {
+public class AdministradorDAOTest {
     
-    private ClienteDAO cdao;
+    private AdministradorDAO dao;
     private DatabaseConnect c;
-    private Class cl = ClienteDAO.class;
+    private Class cl = AdministradorDAO.class;
     
-    public ClienteDAOTest() {
+    public AdministradorDAOTest() {
         
         System.out.println("# Initializing tests...");
         System.out.println("    - Connecting on database...");
@@ -26,7 +26,7 @@ public class ClienteDAOTest {
         c.connect();
         CreateDataBase.createDataBaseAndTables(c);
         
-        cdao = new ClienteDAO(c.getConnection());
+        dao = new AdministradorDAO(c.getConnection());
         System.out.println("    - Connected!!");
         
     }
@@ -34,10 +34,11 @@ public class ClienteDAOTest {
     @Test
     public void testCreate() {
         System.out.println("    - Trying to persist " + cl.getName() + " on database...");
-        Cliente o = new Cliente();
+        Administrador o = new Administrador();
         
         o.setCpf("999.999.999-99");
-        o.setDtCadastro(new Date());
+        o.setDtAdmissao(new Date());
+        o.setCargo("Gerente");
         o.setDtNascimento(new Date());
         o.setEmail("harllem@gmail.com");
         o.setIdDatabase(0);
@@ -57,11 +58,11 @@ public class ClienteDAOTest {
         o.setEndereco(e);
         o.setFone(tel);
                 
-        Assertions.assertTrue(cdao.create(o));
+        Assertions.assertTrue(dao.create(o));
         
         o.setCpf("777.777.777-77");
         
-        Assertions.assertTrue(cdao.create(o));
+        Assertions.assertTrue(dao.create(o));
         
         System.out.println("    - Data saved in database!");
     }
@@ -70,9 +71,9 @@ public class ClienteDAOTest {
     public void testRead() {
         System.out.println("    - Trying to read " + cl.getName() + " on database...");
         
-        Cliente cl = cdao.read("999.999.999-99");
+        Administrador adm = dao.read("999.999.999-99");
         Assertions.assertNotNull(cl);
-        System.out.println("Cliente name -> " + cl.getNome());
+        System.out.println("Cliente name -> " + adm.getNome());
         
         System.out.println("    - Data read in database!");
     }
@@ -82,12 +83,12 @@ public class ClienteDAOTest {
     public void testUpdate() {
         System.out.println("    - Trying to update " + cl.getName() + " on database...");
         
-        Cliente cl = cdao.read("999.999.999-99");
-        System.out.println("Cliente old cpf -> " + cl.getCpf());
-        cl.setCpf("888.888.888-88");
-        Assertions.assertTrue(cdao.update(cl));
-        cl = cdao.read("888.888.888-88");
-        System.out.println("Cliente new cpf -> " + cl.getCpf());
+        Administrador adm = dao.read("999.999.999-99");
+        System.out.println("Cliente old cpf -> " + adm.getCpf());
+        adm.setCpf("888.888.888-88");
+        Assertions.assertTrue(dao.update(adm));
+        adm = dao.read("888.888.888-88");
+        System.out.println("Cliente new cpf -> " + adm.getCpf());
         
         System.out.println("    - Data updated in database!");
     }
@@ -98,7 +99,7 @@ public class ClienteDAOTest {
         
         System.out.println("    - Trying to list " + cl.getName() + " entrys on database...");
         
-        ArrayList<Cliente> l = cdao.list();
+        ArrayList<Administrador> l = dao.list();
         
         l.forEach(e -> {
             System.out.println("id:" + String.valueOf(e.getIdDatabase()) + ", nome:" + e.getNome() + ", cpf:" + e.getCpf());
@@ -112,8 +113,8 @@ public class ClienteDAOTest {
     public void testDelete() {
         System.out.println("    - Trying to delete " + cl.getName() + " on database...");
         
-        Assertions.assertTrue(cdao.delete("888.888.888-88"));
-        Assertions.assertTrue(cdao.delete("777.777.777-77"));
+        Assertions.assertTrue(dao.delete("888.888.888-88"));
+        Assertions.assertTrue(dao.delete("777.777.777-77"));
         
         System.out.println("    - Data deleted in database!");
         this.c.closeConnection();

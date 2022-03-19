@@ -46,7 +46,6 @@ public class AdministradorDAO implements CRUD<Administrador, String>{
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         sql = sql.replaceFirst("<T>", sdf.format(dados.getDtAdmissao()));
         sql = sql.replaceFirst("<T>", dados.getCargo());
-        sql = sql.replaceFirst("<T>", String.valueOf(dados.getIdDatabase()));
         return sql;
     }
     
@@ -55,19 +54,22 @@ public class AdministradorDAO implements CRUD<Administrador, String>{
         Administrador find = read(dados.getCpf());
         String sqlPessoa = "INSERT INTO pessoas (cpf, nome, dtNascimento, email, bairro, cidade, estado, "
                 + "numCasa, rua, dddTelefone, numeroTelefone) " 
-                + "VALUES ('<T>', '<T>', '<T>', '<T>', '<T>', '<T>', <T>, '<T>', <T>, '<T>')";
+                + "VALUES ('<T>', '<T>', '<T>', '<T>', '<T>', '<T>', '<T>', <T>, '<T>', <T>, '<T>')";
         String sqlAdm= "INSERT INTO administradores (dtAdmissao, cargo, idPessoa) " 
                 + "VALUES ('<T>', '<T>', <T>)";
         try {
             if(find == null){
                 Statement st = con.createStatement();
+                long idPessoa = getIdPessoa(dados.getCpf());
                 
-                if(!pessoaIsInDatabase(dados.getCpf())){
+                if(idPessoa == -1){
                     sqlPessoa = createSqlPessoa(sqlPessoa, dados);
                     st.execute(sqlPessoa);
+                    idPessoa = getIdPessoa(dados.getCpf());
                 }
                 
                 sqlAdm = createSqlAdministrador(sqlAdm, dados);
+                sqlAdm = sqlAdm.replaceFirst("<T>", String.valueOf(idPessoa));
                 st.execute(sqlAdm);
                                 
                 closeStatementAndResultSet(null, st);
@@ -79,7 +81,7 @@ public class AdministradorDAO implements CRUD<Administrador, String>{
         return false;
     }
     
-    private boolean pessoaIsInDatabase(String cpf){
+    private long getIdPessoa(String cpf){
         String sql = "SELECT * FROM pessoas WHERE cpf='" + cpf +"'";
         
         try {            
@@ -88,14 +90,14 @@ public class AdministradorDAO implements CRUD<Administrador, String>{
             ResultSet rs = st.executeQuery(sql);
 
             if(rs != null && !rs.isClosed()){
-                return true;
+                return rs.getLong("id");
             }
             
             closeStatementAndResultSet(rs, st);
         } catch (SQLException ex) {
             SQL_ERROR_LOG.message("Error in read Pessoa!", ex);
         }
-        return false;
+        return -1;
     }
     
     @Override
