@@ -84,7 +84,7 @@ public class UsuarioDAOTest {
         
         Usuario user = dao.read("999.999.999-99");
         Assertions.assertNotNull(cl);
-        System.out.println("Cliente name -> " + user.getCpf() + ": " + user.getTipo().toString());
+        System.out.println("Usuario cpf -> " + user.getCpf() + ": " + user.getTipo().toString());
         
         System.out.println("    - Data read in database!");
     }

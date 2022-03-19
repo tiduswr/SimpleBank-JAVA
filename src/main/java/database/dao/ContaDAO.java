@@ -37,7 +37,7 @@ public class ContaDAO implements CRUD<Conta, String>{
     }
     
     private long findIdPessoa(String cpf) throws SQLException{
-        String sql = "SELECT * pessoas WHERE cpf = " + cpf;
+        String sql = "SELECT * FROM pessoas WHERE cpf = '" + cpf +"'";
         Statement st = con.createStatement();
         if(st != null){
             ResultSet rs = st.executeQuery(sql);
@@ -100,6 +100,7 @@ public class ContaDAO implements CRUD<Conta, String>{
                     o.setDateCreation(new SimpleDateFormat("dd/MM/yyyy").parse(rs.getString("dtCreation")));
                     o.setSaldo(rs.getDouble("saldo"));
                     o.setTitular(rs.getString("cpf"));
+                    o.setIdConta(rs.getLong("idConta"));
                     closeStatementAndResultSet(rs, st);
                     return o;
                     
@@ -116,7 +117,7 @@ public class ContaDAO implements CRUD<Conta, String>{
     @Override
     public boolean update(Conta dados) {
         String sql = "UPDATE contas SET agencia='<T>', numeroConta='<T>', dtCreation='<T>', saldo=<T>, idPessoa=<T>"
-                + " WHERE id=" + String.valueOf(dados.getIdConta());
+                + " WHERE idConta=" + String.valueOf(dados.getIdConta());
         
         try {
             sql = createSql(dados, sql);
@@ -137,7 +138,7 @@ public class ContaDAO implements CRUD<Conta, String>{
     @Override
     public boolean delete(String conta) {
         Conta find = read(conta);
-        String sql = "DELETE FROM conta WHERE idConta=<T>";
+        String sql = "DELETE FROM contas WHERE idConta=<T>";
         
         try {
             if(find != null){
