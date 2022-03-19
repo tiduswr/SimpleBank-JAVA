@@ -33,10 +33,6 @@ public class Usuario implements JSONTransform{
         return cpf;
     }
 
-    public void setCpf(String cpf) {
-        this.cpf = cpf;
-    }
-
     public String getSenha() {
         return senha;
     }

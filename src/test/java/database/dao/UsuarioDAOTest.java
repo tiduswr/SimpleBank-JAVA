@@ -8,16 +8,17 @@ import java.util.Date;
 import model.Administrador;
 import model.Endereco;
 import model.Telefone;
+import model.Usuario;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-public class AdministradorDAOTest {
+public class UsuarioDAOTest {
     
-    private AdministradorDAO dao;
+    private UsuarioDAO dao;
     private DatabaseConnect c;
-    private Class cl = AdministradorDAO.class;
+    private Class cl = UsuarioDAO.class;
     
-    public AdministradorDAOTest() {
+    public UsuarioDAOTest() {
         
         System.out.println("# Initializing tests...");
         System.out.println("    - Connecting on database...");
@@ -26,7 +27,7 @@ public class AdministradorDAOTest {
         c.connect();
         CreateDataBase.createDataBaseAndTables(c);
         
-        dao = new AdministradorDAO(c.getConnection());
+        dao = new UsuarioDAO(c.getConnection());
         System.out.println("    - Connected!!");
         
     }
@@ -34,6 +35,8 @@ public class AdministradorDAOTest {
     @Test
     public void testCreate() {
         System.out.println("    - Trying to persist " + cl.getName() + " on database...");
+        
+        AdministradorDAO daoAdm = new AdministradorDAO(c.getConnection());        
         Administrador o = new Administrador();
         
         o.setCpf("999.999.999-99");
@@ -58,12 +61,20 @@ public class AdministradorDAOTest {
         o.setEndereco(e);
         o.setFone(tel);
                 
-        Assertions.assertTrue(dao.create(o));
+        Assertions.assertTrue(daoAdm.create(o));
         
         o.setCpf("777.777.777-77");
         
-        Assertions.assertTrue(dao.create(o));
+        Assertions.assertTrue(daoAdm.create(o));
         
+        o = daoAdm.read(o.getCpf());
+        Usuario user = new Usuario(o.getIdDatabase(), o.getCpf(), "admLife", Usuario.TipoUsuario.ADM);
+        Assertions.assertTrue(dao.create(user));
+        
+        o = daoAdm.read("999.999.999-99");
+        user = new Usuario(o.getIdDatabase(), o.getCpf(), "admLife", Usuario.TipoUsuario.CLIENTE);
+        
+        Assertions.assertTrue(dao.create(user));
         System.out.println("    - Data saved in database!");
     }
 
@@ -71,50 +82,49 @@ public class AdministradorDAOTest {
     public void testRead() {
         System.out.println("    - Trying to read " + cl.getName() + " on database...");
         
-        Administrador adm = dao.read("999.999.999-99");
+        Usuario user = dao.read("999.999.999-99");
         Assertions.assertNotNull(cl);
-        System.out.println("Cliente name -> " + adm.getNome());
+        System.out.println("Cliente name -> " + user.getCpf() + ": " + user.getTipo().toString());
         
         System.out.println("    - Data read in database!");
     }
 
-
-    @Test
+    
     public void testUpdate() {
         System.out.println("    - Trying to update " + cl.getName() + " on database...");
         
-        Administrador adm = dao.read("999.999.999-99");
-        System.out.println("Administrador old cpf -> " + adm.getCpf());
-        adm.setCpf("888.888.888-88");
-        Assertions.assertTrue(dao.update(adm));
-        adm = dao.read("888.888.888-88");
-        System.out.println("Administrador new cpf -> " + adm.getCpf());
+        Usuario user = dao.read("999.999.999-99");
+        System.out.println("Usuario old Tipo -> " + user.getTipo().toString());
+        user.setTipo(Usuario.TipoUsuario.ADM);
+        Assertions.assertTrue(dao.update(user));
+        user = dao.read(user.getCpf());
+        System.out.println("Usuario new Tipo -> " + user.getTipo().toString());
         
         System.out.println("    - Data updated in database!");
     }
-    
 
     @Test
     public void testList() {
-        
         System.out.println("    - Trying to list " + cl.getName() + " entrys on database...");
         
-        ArrayList<Administrador> l = dao.list();
+        ArrayList<Usuario> l = dao.list();
         
         l.forEach(e -> {
-            System.out.println("id:" + String.valueOf(e.getIdDatabase()) + ", nome:" + e.getNome() + ", cpf:" + e.getCpf());
+            System.out.println("id:" + String.valueOf(e.getId()) + ", cpf:" + e.getCpf() + ", tipo:" + e.getTipo().toString());
         });
         
         System.out.println("    - Entrys listed in database!");
-        
     }
     
     @Test
     public void testDelete() {
         System.out.println("    - Trying to delete " + cl.getName() + " on database...");
         
-        Assertions.assertTrue(dao.delete("888.888.888-88"));
+        AdministradorDAO daoAdm = new AdministradorDAO(c.getConnection());
+        Assertions.assertTrue(dao.delete("999.999.999-99"));
         Assertions.assertTrue(dao.delete("777.777.777-77"));
+        Assertions.assertTrue(daoAdm.delete("999.999.999-99"));
+        Assertions.assertTrue(daoAdm.delete("777.777.777-77"));
         
         System.out.println("    - Data deleted in database!");
         this.c.closeConnection();

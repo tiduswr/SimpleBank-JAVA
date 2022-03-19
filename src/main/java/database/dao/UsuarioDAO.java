@@ -24,7 +24,7 @@ public class UsuarioDAO implements CRUD<Usuario, String>{
     public boolean create(Usuario dados) {
         Usuario find = read(dados.getCpf());
         String sqlUsuario = "INSERT INTO usuarios (senha, tipo, idPessoa) VALUES ('<T>', <T>, <T>)";
-        String sqlSelect = "SELECT * pessoas WHERE cpf = '" + dados.getCpf() + "'";
+        String sqlSelect = "SELECT * FROM pessoas WHERE cpf = '" + dados.getCpf() + "'";
         
         try {
             if(find == null){
@@ -35,10 +35,10 @@ public class UsuarioDAO implements CRUD<Usuario, String>{
                 sqlUsuario = sqlUsuario.replaceFirst("<T>", String.valueOf(dados.getTipo().getValue()));
                 if(rs != null && !rs.isClosed()){
                     sqlUsuario = sqlUsuario.replaceFirst("<T>", String.valueOf(rs.getLong("id")));
+                    st.execute(sqlUsuario);
+                    closeStatementAndResultSet(rs, st);
+                    return true;
                 }
-                st.execute(sqlUsuario);
-                closeStatementAndResultSet(rs, st);
-                return true;
             }
         } catch (SQLException ex) {
             SQL_ERROR_LOG.message("Error in Insert Usuario!", ex);
@@ -58,12 +58,10 @@ public class UsuarioDAO implements CRUD<Usuario, String>{
             ResultSet rs = st.executeQuery(sql);
 
             if(rs != null && !rs.isClosed()){
-                Usuario o = new Usuario();
-                
-                o.setId(rs.getLong("idUser"));
-                o.setCpf(rs.getString("cpf"));
-                o.setSenha(rs.getString("senha"));
-                o.setTipo(Usuario.TipoUsuario.getByInt(rs.getInt("tipo")));
+                Usuario o = new Usuario(rs.getLong("idUser"), 
+                        rs.getString("cpf"), 
+                        rs.getString("senha"), 
+                        Usuario.TipoUsuario.getByInt(rs.getInt("tipo")));
                 
                 closeStatementAndResultSet(rs, st);
 
@@ -81,7 +79,7 @@ public class UsuarioDAO implements CRUD<Usuario, String>{
     @Override
     public boolean update(Usuario dados) {
         String sql = "UPDATE usuarios SET senha='<T>', tipo=<T>"
-                + " WHERE id =" + String.valueOf(dados.getId());
+                + " WHERE idUser =" + String.valueOf(dados.getId());
         
         try {
             Statement st = con.createStatement();
@@ -136,12 +134,10 @@ public class UsuarioDAO implements CRUD<Usuario, String>{
             ArrayList<Usuario> l = new ArrayList<>();
             
             while(rs.next()){
-                Usuario o = new Usuario();
-
-                o.setId(rs.getLong("idUser"));
-                o.setCpf(rs.getString("cpf"));
-                o.setSenha(rs.getString("senha"));
-                o.setTipo(Usuario.TipoUsuario.getByInt(rs.getInt("tipo")));
+                Usuario o = new Usuario(rs.getLong("idUser"), 
+                        rs.getString("cpf"), 
+                        rs.getString("senha"), 
+                        Usuario.TipoUsuario.getByInt(rs.getInt("tipo")));
                 
                 l.add(o);
             }

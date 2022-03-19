@@ -13,6 +13,7 @@ public class Cliente extends Pessoa{
             String email, Telefone fone, Endereco endereco, Date dtCadastro, boolean active) {
         super(idDatabase, cpf, nome, dtNascimento, email, fone, endereco);
         this.dtCadastro = dtCadastro;
+        this.active = active;
     }
 
     public Cliente() {
