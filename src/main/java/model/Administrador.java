@@ -42,6 +42,11 @@ public class Administrador extends Pessoa{
     public void setDtAdmissao(Date dtAdmissao) {
         this.dtAdmissao = dtAdmissao;
     }
+
+    @Override
+    public String toString() {
+        return super.toString() + "Administrador{" + "cargo=" + cargo + ", dtAdmissao=" + dtAdmissao + '}';
+    }
     
     @Override
     public JSONObject toJson() {

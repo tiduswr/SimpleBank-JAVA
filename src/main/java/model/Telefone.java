@@ -42,6 +42,11 @@ public class Telefone implements JSONTransform{
     }
 
     @Override
+    public String toString() {
+        return "Telefone{" + "ddd=" + ddd + ", numero=" + numero + '}';
+    }
+    
+    @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
         

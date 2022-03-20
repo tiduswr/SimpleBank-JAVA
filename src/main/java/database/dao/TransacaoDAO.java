@@ -212,4 +212,56 @@ public class TransacaoDAO implements CRUD<Transacao, Long>{
         }
         return null;
     }
+    
+    public ArrayList<Transacao> list(long id) {
+        String sql = "SELECT * FROM transacoes WHERE idContaOrigem = " + String.valueOf(id);
+        String sqlConta = "SELECT * FROM contas "
+                        + "INNER JOIN pessoas "
+                        + "ON pessoas.id = contas.idPessoa "
+                        + "WHERE idConta = <T>";
+        
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            ArrayList<Transacao> l = new ArrayList<>();
+            
+            while(rs.next()){
+                Statement stAux = con.createStatement();
+                ResultSet rsAux = stAux.executeQuery(sqlConta.replaceFirst("<T>", String.valueOf(rs.getLong("idContaOrigem"))));
+                
+                Transacao o = new Transacao();
+                
+                if(rsAux != null && !rsAux.isClosed()){
+                    o.setFrom(buildConta(rsAux));
+                    rsAux.close();
+                    
+                    rsAux = stAux.executeQuery(sqlConta.replaceFirst("<T>", String.valueOf(rs.getLong("idContaDestino"))));
+                    if(rsAux != null && !rsAux.isClosed()){
+                        o.setTo(buildConta(rsAux));
+                    }
+                    
+                    o.setIdTransacao(rs.getLong("idTransacao"));
+                    o.setValMovimentado(rs.getDouble("valMovimentado"));
+                    o.setTipo(Transacao.TipoTransacao.getByInt(rs.getInt("tipoTransacao")));
+                    try {
+                        o.setDtMovimento(new SimpleDateFormat("dd/MM/yyyy").parse(rs.getString("dtMovimento")));
+                    } catch (ParseException ex) {
+                        SQL_ERROR_LOG.message("Error in read Cliente!(Parse Data Movimento)", null);
+                    }
+                    l.add(o);
+                    
+                    closeStatementAndResultSet(rsAux, stAux);
+                }
+            }
+            closeStatementAndResultSet(rs, st);
+            
+            return l;
+        } catch (SQLException ex) {
+            SQL_ERROR_LOG.message("Error in create list of Transacoes!", ex);
+        } catch (ParseException ex) {
+            SQL_ERROR_LOG.message("Error in read Transacao!(Parse Data Criação Conta)", null);
+        }
+        return null;
+    }
+    
 }

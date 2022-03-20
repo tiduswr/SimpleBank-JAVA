@@ -187,4 +187,35 @@ public class ContaDAO implements CRUD<Conta, String>{
         return null;
     }
     
+    public ArrayList<Conta> list(String cpf) {
+        String sql =  "SELECT * FROM contas "
+                    + "INNER JOIN pessoas "
+                    + "ON pessoas.id = contas.idPessoa "
+                    + "WHERE cpf = '" + cpf + "'";
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            ArrayList<Conta> l = new ArrayList<>();
+            
+            while(rs.next()){
+                Conta o = new Conta();
+
+                    o.setAgencia(rs.getString("agencia"));
+                    o.setNumeroConta(rs.getString("numeroConta"));
+                    o.setDateCreation(new SimpleDateFormat("dd/MM/yyyy").parse(rs.getString("dtCreation")));
+                    o.setSaldo(rs.getDouble("saldo"));
+                    o.setTitular(rs.getString("cpf"));
+                    l.add(o);
+            }
+            closeStatementAndResultSet(rs, st);
+            
+            return l;
+        } catch (SQLException ex) {
+            SQL_ERROR_LOG.message("Error in create list of Contas!", ex);
+        } catch (ParseException ex) {
+            SQL_ERROR_LOG.message("Error in create list of Contas! (Parse Error)", null);
+        }
+        return null;
+    }
+    
 }
