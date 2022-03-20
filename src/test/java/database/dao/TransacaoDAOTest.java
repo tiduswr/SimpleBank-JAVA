@@ -12,7 +12,6 @@ import model.Telefone;
 import model.Transacao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import static org.junit.jupiter.api.Assertions.*;
 
 public class TransacaoDAOTest {
     
@@ -21,7 +20,7 @@ public class TransacaoDAOTest {
     private Class cl = TransacaoDAO.class;
     
     public TransacaoDAOTest() {
-        System.out.println("# Initializing tests...");
+        System.out.println("\n\n# Initializing tests of " + cl.getName() + "...");
         System.out.println("    - Connecting on database...");
         
         c = new SQLiteConnection("db/dbTeste.db");
@@ -145,7 +144,7 @@ public class TransacaoDAOTest {
         
         System.out.println("    - Data deleted in database!");
         this.c.closeConnection();
-        System.out.println("# Database Disconected!!");
+        System.out.println("\n\n# End of tests of " + cl.getName() + "!");
     }
     
 }

@@ -19,7 +19,7 @@ public class AdministradorDAOTest {
     
     public AdministradorDAOTest() {
         
-        System.out.println("# Initializing tests...");
+        System.out.println("\n\n# Initializing tests of " + cl.getName() + "...");
         System.out.println("    - Connecting on database...");
         
         c = new SQLiteConnection("db/dbTeste.db");
@@ -118,7 +118,7 @@ public class AdministradorDAOTest {
         
         System.out.println("    - Data deleted in database!");
         this.c.closeConnection();
-        System.out.println("# Database Disconected!!");
+        System.out.println("\n\n# End of tests of " + cl.getName() + "!");
     }
     
 }
