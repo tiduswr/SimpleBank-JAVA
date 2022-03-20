@@ -9,16 +9,18 @@ import model.Cliente;
 import model.Conta;
 import model.Endereco;
 import model.Telefone;
+import model.Transacao;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
+import static org.junit.jupiter.api.Assertions.*;
 
-public class ContaDAOTest {
+public class TransacaoDAOTest {
     
-    private ContaDAO dao;
+    private TransacaoDAO dao;
     private DatabaseConnect c;
-    private Class cl = ContaDAO.class;
+    private Class cl = TransacaoDAO.class;
     
-    public ContaDAOTest() {
+    public TransacaoDAOTest() {
         System.out.println("# Initializing tests...");
         System.out.println("    - Connecting on database...");
         
@@ -26,10 +28,10 @@ public class ContaDAOTest {
         c.connect();
         CreateDataBase.createDataBaseAndTables(c);
         
-        dao = new ContaDAO(c.getConnection());
-        System.out.println("    - Connected!!");
+        dao = new TransacaoDAO(c.getConnection());
+        System.out.println("    - Connected!!");        
     }
-
+        
     @Test
     public void testCreate() {
         System.out.println("    - Trying to persist " + cl.getName() + " on database...");
@@ -61,6 +63,7 @@ public class ContaDAOTest {
                 
         Assertions.assertTrue(daoCliente.create(o));
         
+        ContaDAO ccDao = new ContaDAO(c.getConnection());
         Conta cc = new Conta();
         cc.setAgencia("555");
         cc.setNumeroConta("334422");
@@ -69,50 +72,56 @@ public class ContaDAOTest {
         cc.setSaldo(1000f);
         cc.setTitular("999.999.999-99");
         
-        Assertions.assertTrue(dao.create(cc));
+        Assertions.assertTrue(ccDao.create(cc));
         
-        cc.setNumeroConta("112233");
+        //Simulando um depósito
+        Transacao tt = new Transacao();
         
-        Assertions.assertTrue(dao.create(cc));
+        tt.setFrom(cc);
+        tt.setTo(cc);
+        tt.setIdTransacao(-1);
+        tt.setDtMovimento(new Date());
+        tt.setTipo(Transacao.TipoTransacao.DEPOSITO);
+        tt.setValMovimentado(1000f);
+        
+        Assertions.assertTrue(dao.create(tt));
+        
+        //Simulando um saque
+        
+        tt.setTipo(Transacao.TipoTransacao.SAQUE);
+        
+        Assertions.assertTrue(dao.create(tt));
         
         System.out.println("    - Data saved in database!");
     }
 
-    
     @Test
     public void testRead() {
         System.out.println("    - Trying to read " + cl.getName() + " on database...");
         
-        Conta cc = dao.read("555-334422");
-        Assertions.assertNotNull(cc);
-        System.out.println("Conta cpf -> " + cc.getCpfTitular() + "; Conta numero: " + cc.getAgencia() + "-" + cc.getNumeroConta());
+        Transacao tra = dao.read(dao.list().get(1).getIdTransacao());
+        Assertions.assertNotNull(tra);
+        System.out.println("Transacao tipo -> " + tra.getTipo().toString() + "; "
+                + "Conta origem numero: " + tra.getFrom().toString() + "; Conta destino numero: " + tra.getTo().toString());
         
         System.out.println("    - Data read in database!");
     }
 
     @Test
     public void testUpdate() {
-        System.out.println("    - Trying to update " + cl.getName() + " on database...");
-        
-        Conta cc = dao.read("555-334422");
-        System.out.println("Conta old numero -> " + cc.getAgencia() + "-" + cc.getNumeroConta());
-        cc.setNumeroConta("224433");
-        Assertions.assertTrue(dao.update(cc));
-        cc = dao.read(cc.getAgencia() + "-" + cc.getNumeroConta());
-        System.out.println("Conta new numero -> " + cc.getAgencia() + "-" + cc.getNumeroConta());
-        
-        System.out.println("    - Data updated in database!");
+        System.out.println("    - The class " + cl.getName() + " dont have a update method!");
     }
 
     @Test
     public void testList() {
         System.out.println("    - Trying to list " + cl.getName() + " entrys on database...");
         
-        ArrayList<Conta> l = dao.list();
+        ArrayList<Transacao> l = dao.list();
         
         l.forEach(e -> {
-            System.out.println("id:" + String.valueOf(e.getIdConta()) + ", cpf:" + e.getCpfTitular() 
-                    + ", conta:" + e.getAgencia() + "-" + e.getNumeroConta());
+            System.out.println("id:" + String.valueOf(e.getIdTransacao())
+                    + "; Conta origem numero: " + e.getFrom().toString() 
+                    + "; Conta destino numero: " + e.getTo().toString());
         });
         
         System.out.println("    - Entrys listed in database!");
@@ -123,8 +132,15 @@ public class ContaDAOTest {
         System.out.println("    - Trying to delete " + cl.getName() + " on database...");
         
         ClienteDAO daoCli = new ClienteDAO(c.getConnection());
-        Assertions.assertTrue(dao.delete("555-224433"));
-        Assertions.assertTrue(dao.delete("555-112233"));
+        ContaDAO ccDao = new ContaDAO(c.getConnection());
+        
+        ArrayList<Transacao> l = dao.list();
+        
+        l.forEach(e -> {
+            Assertions.assertTrue(dao.delete(e.getIdTransacao()));
+        });
+        
+        Assertions.assertTrue(ccDao.delete("555-334422"));
         Assertions.assertTrue(daoCli.delete("999.999.999-99"));
         
         System.out.println("    - Data deleted in database!");

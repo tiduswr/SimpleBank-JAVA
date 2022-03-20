@@ -83,7 +83,7 @@ public class UsuarioDAOTest {
         System.out.println("    - Trying to read " + cl.getName() + " on database...");
         
         Usuario user = dao.read("999.999.999-99");
-        Assertions.assertNotNull(cl);
+        Assertions.assertNotNull(user);
         System.out.println("Usuario cpf -> " + user.getCpf() + ": " + user.getTipo().toString());
         
         System.out.println("    - Data read in database!");

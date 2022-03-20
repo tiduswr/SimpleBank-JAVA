@@ -39,12 +39,12 @@ idPessoa               INTEGER NOT NULL,
 FOREIGN KEY(idPessoa) REFERENCES pessoas(id) ON DELETE CASCADE ON UPDATE CASCADE);
 CREATE TABLE IF NOT EXISTS transacoes (
 idTransacao            INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-idContaOrigem          TEXT NOT NULL,
-idContaDestino         TEXT,
+idContaOrigem          INTEGER NOT NULL,
+idContaDestino         INTEGER NOT NULL,
 tipoTransacao          INTEGER NOT NULL,
 valMovimentado         REAL NOT NULL,
 dtMovimento            TEXT(10) NOT NULL,
-FOREIGN KEY(idContaOrigem) REFERENCES contas(idConta) ON DELETE CASCADE ON UPDATE CASCADE,
-FOREIGN KEY(idContaDestino) REFERENCES contas(idConta) ON DELETE CASCADE ON UPDATE CASCADE)
+FOREIGN KEY(idContaOrigem) REFERENCES contas(idConta) ON UPDATE CASCADE,
+FOREIGN KEY(idContaDestino) REFERENCES contas(idConta) ON UPDATE CASCADE)
 
 

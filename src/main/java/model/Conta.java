@@ -102,8 +102,7 @@ public class Conta implements JSONTransform{
 
     @Override
     public String toString() {
-        return "Conta{" + "agencia=" + agencia + ", numeroConta=" + numeroConta + 
-                ", cpfTitular=" + cpfTitular + ", dtCreation=" + dtCreation + ", saldo=" + saldo + '}';
+        return agencia + "-" + numeroConta;
     }
     
     @Override

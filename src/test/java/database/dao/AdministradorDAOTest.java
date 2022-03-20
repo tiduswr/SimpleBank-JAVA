@@ -72,7 +72,7 @@ public class AdministradorDAOTest {
         System.out.println("    - Trying to read " + cl.getName() + " on database...");
         
         Administrador adm = dao.read("999.999.999-99");
-        Assertions.assertNotNull(cl);
+        Assertions.assertNotNull(adm);
         System.out.println("Administrador name -> " + adm.getNome());
         
         System.out.println("    - Data read in database!");

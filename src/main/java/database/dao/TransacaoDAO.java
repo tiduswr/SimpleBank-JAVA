@@ -7,12 +7,7 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import model.Cliente;
 import model.Conta;
-import model.Endereco;
-import model.Telefone;
 import model.Transacao;
 import util.SQL_ERROR_LOG;
 
@@ -36,28 +31,31 @@ public class TransacaoDAO implements CRUD<Transacao, Long>{
                     + "WHERE agencia='<T>' AND numeroConta='<T>'";
         String sqlCreateTransacoes = "INSERT INTO transacoes (idContaOrigem, idContaDestino, tipoTransacao, "
                     + "valMovimentado, dtMovimento) "
-                    + "VALUES ('<T>', '<T>', <T>, <T>, '<T>')";
+                    + "VALUES (<T>, <T>, <T>, <T>, '<T>')";
         
         Transacao find = read(dados.getIdTransacao());
         
-        if(find != null){
+        if(find == null){
             try {
                 Statement st = con.createStatement();
                 
                 //Pega id da conta origem
                 String aux = sqlSelectContas.replaceFirst("<T>", dados.getFrom().getAgencia());
-                aux = aux.replaceFirst("<T>", dados.getFrom().getAgencia());
+                aux = aux.replaceFirst("<T>", dados.getFrom().getNumeroConta());
                 ResultSet rs = st.executeQuery(aux);
                 sqlCreateTransacoes = sqlCreateTransacoes.replaceFirst("<T>", rs.getString("idConta"));
+                closeStatementAndResultSet(rs, st);
                 
                 //Pega id da conta destino
+                st = con.createStatement();
                 aux = sqlSelectContas.replaceFirst("<T>", dados.getTo().getAgencia());
-                aux = aux.replaceFirst("<T>", dados.getTo().getAgencia());
-                if(!rs.isClosed()) rs.close();
+                aux = aux.replaceFirst("<T>", dados.getTo().getNumeroConta());
                 rs = st.executeQuery(aux);
                 sqlCreateTransacoes = sqlCreateTransacoes.replaceFirst("<T>", rs.getString("idConta"));
+                closeStatementAndResultSet(rs, st);
                 
                 //Preenche restante dos dados
+                st = con.createStatement();
                 sqlCreateTransacoes = sqlCreateTransacoes.replaceFirst("<T>", String.valueOf(dados.getTipo().getValue()));
                 sqlCreateTransacoes = sqlCreateTransacoes.replaceFirst("<T>", String.valueOf(dados.getValMovimentado()));
                 sqlCreateTransacoes = sqlCreateTransacoes.replaceFirst("<T>", 
@@ -96,8 +94,8 @@ public class TransacaoDAO implements CRUD<Transacao, Long>{
             ResultSet rs = st.executeQuery(sql);
 
             if(rs != null && !rs.isClosed()){
-                
-                ResultSet rsAux = st.executeQuery(sqlConta.replaceFirst("<T>", String.valueOf(rs.getLong("idContaOrigem"))));
+                Statement stAux = con.createStatement();
+                ResultSet rsAux = stAux.executeQuery(sqlConta.replaceFirst("<T>", String.valueOf(rs.getLong("idContaOrigem"))));
                 
                 Transacao o = new Transacao();
                 
@@ -105,7 +103,7 @@ public class TransacaoDAO implements CRUD<Transacao, Long>{
                     o.setFrom(buildConta(rsAux));
                     rsAux.close();
                     
-                    rsAux = st.executeQuery(sqlConta.replaceFirst("<T>", String.valueOf(rs.getLong("idContaDestino"))));
+                    rsAux = stAux.executeQuery(sqlConta.replaceFirst("<T>", String.valueOf(rs.getLong("idContaDestino"))));
                     if(rsAux != null && !rsAux.isClosed()){
                         o.setTo(buildConta(rsAux));
                     }else{
@@ -120,11 +118,11 @@ public class TransacaoDAO implements CRUD<Transacao, Long>{
                     } catch (ParseException ex) {
                         SQL_ERROR_LOG.message("Error in read Cliente!(Parse Data Movimento)", null);
                     }
-                    closeStatementAndResultSet(rsAux, st);
+                    closeStatementAndResultSet(rsAux, stAux);
                     closeStatementAndResultSet(rs, st);
                     return o;
                 }
-                closeStatementAndResultSet(rsAux, st);
+                closeStatementAndResultSet(rsAux, stAux);
                 closeStatementAndResultSet(rs, st);
                 return null;
             }
@@ -177,7 +175,8 @@ public class TransacaoDAO implements CRUD<Transacao, Long>{
             ArrayList<Transacao> l = new ArrayList<>();
             
             while(rs.next()){
-                ResultSet rsAux = st.executeQuery(sqlConta.replaceFirst("<T>", String.valueOf(rs.getLong("idContaOrigem"))));
+                Statement stAux = con.createStatement();
+                ResultSet rsAux = stAux.executeQuery(sqlConta.replaceFirst("<T>", String.valueOf(rs.getLong("idContaOrigem"))));
                 
                 Transacao o = new Transacao();
                 
@@ -185,11 +184,9 @@ public class TransacaoDAO implements CRUD<Transacao, Long>{
                     o.setFrom(buildConta(rsAux));
                     rsAux.close();
                     
-                    rsAux = st.executeQuery(sqlConta.replaceFirst("<T>", String.valueOf(rs.getLong("idContaDestino"))));
+                    rsAux = stAux.executeQuery(sqlConta.replaceFirst("<T>", String.valueOf(rs.getLong("idContaDestino"))));
                     if(rsAux != null && !rsAux.isClosed()){
                         o.setTo(buildConta(rsAux));
-                    }else{
-                        o.setTo(null);
                     }
                     
                     o.setIdTransacao(rs.getLong("idTransacao"));
@@ -201,9 +198,9 @@ public class TransacaoDAO implements CRUD<Transacao, Long>{
                         SQL_ERROR_LOG.message("Error in read Cliente!(Parse Data Movimento)", null);
                     }
                     l.add(o);
+                    
+                    closeStatementAndResultSet(rsAux, stAux);
                 }
-                
-                closeStatementAndResultSet(rsAux, null);
             }
             closeStatementAndResultSet(rs, st);
             

@@ -70,9 +70,9 @@ public class ClienteDAOTest {
     public void testRead() {
         System.out.println("    - Trying to read " + cl.getName() + " on database...");
         
-        Cliente cl = cdao.read("999.999.999-99");
-        Assertions.assertNotNull(cl);
-        System.out.println("Cliente name -> " + cl.getNome());
+        Cliente cli = cdao.read("999.999.999-99");
+        Assertions.assertNotNull(cli);
+        System.out.println("Cliente name -> " + cli.getNome());
         
         System.out.println("    - Data read in database!");
     }
