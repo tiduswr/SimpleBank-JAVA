@@ -21,14 +21,15 @@ public final class MenuLateral extends javax.swing.JPanel {
     private static Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
     private int tipoUsuario;
     
-    public MenuLateral() {
+    public MenuLateral(int tipoUsuario) {
+        this.tipoUsuario = tipoUsuario;
         initComponents();
         setOpaque(false);
         listMenu.setOpaque(false);
         if(tipoUsuario == 0){
             initUsuario();
         }else if (tipoUsuario == 1){
-            
+            initAdm();
         }
     }
 
@@ -44,14 +45,15 @@ public final class MenuLateral extends javax.swing.JPanel {
     
     private void initAdm(){
         this.listMenu.addItem(new ModelMenu("", "Ações do Administrador", ModelMenu.MenuType.TITLE));
-        this.listMenu.addItem(new ModelMenu("aprovar.png", "Aprovar Cadastros", ModelMenu.MenuType.MENU));
-        this.listMenu.addItem(new ModelMenu("aprovar.png", "Aprovar Contas", ModelMenu.MenuType.MENU));
+        this.listMenu.addItem(new ModelMenu("aprovar.png", "Aprovar Solicitações", ModelMenu.MenuType.MENU));
         this.listMenu.addItem(new ModelMenu("historicoConta.png", "Histórico Completo", ModelMenu.MenuType.MENU));
         this.listMenu.addItem(new ModelMenu("logout1.png", "Sair", ModelMenu.MenuType.MENU));
     }
     
     public void setTipoUsuario(int i){
         this.tipoUsuario = i;
+        this.revalidate();
+        this.repaint();
     }
     
     public void addEventMenuSelected(EventMenuSelected e){

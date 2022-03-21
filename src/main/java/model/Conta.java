@@ -12,16 +12,18 @@ public class Conta implements JSONTransform{
     private Date dtCreation;
     private double saldo;
     private long idConta;
+    private boolean active;
     
     public Conta(){}
     
-    public Conta(long id, String agencia, String numeroConta, String cpfTitular){
+    public Conta(long id, String agencia, String numeroConta, String cpfTitular, boolean active, Date dtCreation){
         this.idConta = id;
         this.agencia = agencia;
         this.numeroConta = numeroConta;
         this.cpfTitular = cpfTitular;
-        this.dtCreation = new Date();
+        this.dtCreation = dtCreation;
         this.saldo = 0;
+        this.active = active;
     }
     
     public Conta(String json) throws ParseException{
@@ -34,6 +36,7 @@ public class Conta implements JSONTransform{
         this.saldo = j.getDouble("saldo");
         this.dtCreation = sdf.parse(j.getString("dtCreation"));
         this.idConta = j.getLong("idConta");
+        this.active = j.getBoolean("active");
     }
     
     //Metodos getters and setters
@@ -72,6 +75,14 @@ public class Conta implements JSONTransform{
     }
     public void setIdConta(long idConta) {
         this.idConta = idConta;
+    }
+
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
     }
     
     //Transações
@@ -114,6 +125,7 @@ public class Conta implements JSONTransform{
         json.put("cpfTitular", getCpfTitular());
         json.put("saldo", getSaldo());
         json.put("idConta", getIdConta());
+        json.put("active", this.active);
         
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         json.put("dtCreation", sdf.format(getDateCreation()));

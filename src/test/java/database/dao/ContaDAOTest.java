@@ -67,6 +67,7 @@ public class ContaDAOTest {
         cc.setDateCreation(new Date());
         cc.setSaldo(1000f);
         cc.setTitular("999.999.999-99");
+        cc.setActive(true);
         
         Assertions.assertTrue(dao.create(cc));
         

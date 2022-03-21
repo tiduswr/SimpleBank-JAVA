@@ -2,12 +2,15 @@ package ui;
 
 import control.Controller;
 import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
 import org.json.JSONObject;
 import ui.components.Notification;
 
 public final class Login extends javax.swing.JFrame {
     private Controller con;
+    
     public Login() {
         initComponents();
         
@@ -17,8 +20,33 @@ public final class Login extends javax.swing.JFrame {
         this.setPreferredSize(this.getSize());
         this.setTitle("Simple Bank - Login");
         this.setIconImage(new ImageIcon(getClass().getResource("/icons/mainIcon.png")).getImage());
+        this.addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosing(WindowEvent e) {
+                con.disconnectDB();
+                super.windowClosing(e);
+            }
+        });
     }
-
+    
+    public Login(Controller con) {
+        initComponents();
+        
+        this.con = con;
+        setBackground(Color.WHITE);
+        this.setLocationRelativeTo(null);
+        this.setPreferredSize(this.getSize());
+        this.setTitle("Simple Bank - Login");
+        this.setIconImage(new ImageIcon(getClass().getResource("/icons/mainIcon.png")).getImage());
+        this.addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosing(WindowEvent e) {
+                con.disconnectDB();
+                super.windowClosing(e);
+            }
+        });
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

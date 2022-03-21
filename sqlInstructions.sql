@@ -35,6 +35,7 @@ agencia                TEXT NOT NULL,
 numeroConta            TEXT NOT NULL,
 dtCreation             TEXT NOT NULL,
 saldo                  REAL NOT NULL,
+active                 INTEGER NOT NULL,
 idPessoa               INTEGER NOT NULL,
 FOREIGN KEY(idPessoa) REFERENCES pessoas(id) ON DELETE CASCADE ON UPDATE CASCADE);
 CREATE TABLE IF NOT EXISTS transacoes (

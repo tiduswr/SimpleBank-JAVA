@@ -334,7 +334,7 @@ public class Controller {
     
     public String updateCliente(String json){
         
-        JSONArray errors = new JSONArray(DataValidator.adminIsValid(json));
+        JSONArray errors = new JSONArray(DataValidator.clienteIsValid(json));
         if(DataValidator.containsMessageErrors(errors.toString())){
             return filterErrors(errors).toString();
         }
@@ -359,7 +359,7 @@ public class Controller {
     
     public String updateUsuario(String json, boolean criptSenha){
         
-        JSONArray errors = new JSONArray(DataValidator.adminIsValid(json));
+        JSONArray errors = new JSONArray(DataValidator.usuarioIsValid(json));
         if(DataValidator.containsMessageErrors(errors.toString())){
             return filterErrors(errors).toString();
         }

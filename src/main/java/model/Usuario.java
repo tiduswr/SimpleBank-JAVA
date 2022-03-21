@@ -81,6 +81,7 @@ public class Usuario implements JSONTransform{
         o.put("cpf", getCpf());
         o.put("senha", getSenha());
         o.put("tipo", getTipo().getValue());
+        o.put("tipoDesc", getTipo().toString());
         o.put("idUser", getId());
         o.put("active", isActive());
                 

@@ -26,6 +26,11 @@ public class ContaDAO implements CRUD<Conta, String>{
             long idPessoa = findIdPessoa(dados.getCpfTitular());
             if(idPessoa != -1){
                 sql = sql.replaceFirst("<T>", String.valueOf(idPessoa));
+                if(dados.isActive()){
+                    sql = sql.replaceFirst("<T>", "1");
+                }else{
+                    sql = sql.replaceFirst("<T>", "0");
+                }
                 return sql;
             }else{
                 return null;
@@ -56,8 +61,8 @@ public class ContaDAO implements CRUD<Conta, String>{
     @Override
     public boolean create(Conta dados) {
         Conta find = read(dados.getAgencia() + "-" + dados.getNumeroConta());
-        String sql = "INSERT INTO contas (agencia, numeroConta, dtCreation, saldo, idPessoa) " 
-                + "VALUES ('<T>', '<T>', '<T>', <T>, <T>)";
+        String sql = "INSERT INTO contas (agencia, numeroConta, dtCreation, saldo, idPessoa, active) " 
+                + "VALUES ('<T>', '<T>', '<T>', <T>, <T>, <T>)";
         
         try {
             if(find == null){
@@ -98,6 +103,7 @@ public class ContaDAO implements CRUD<Conta, String>{
                     o.setAgencia(rs.getString("agencia"));
                     o.setNumeroConta(rs.getString("numeroConta"));
                     o.setDateCreation(new SimpleDateFormat("dd/MM/yyyy").parse(rs.getString("dtCreation")));
+                    o.setActive(rs.getBoolean("active"));
                     o.setSaldo(rs.getDouble("saldo"));
                     o.setTitular(rs.getString("cpf"));
                     o.setIdConta(rs.getLong("idConta"));
@@ -116,7 +122,7 @@ public class ContaDAO implements CRUD<Conta, String>{
 
     @Override
     public boolean update(Conta dados) {
-        String sql = "UPDATE contas SET agencia='<T>', numeroConta='<T>', dtCreation='<T>', saldo=<T>, idPessoa=<T>"
+        String sql = "UPDATE contas SET agencia='<T>', numeroConta='<T>', dtCreation='<T>', saldo=<T>, idPessoa=<T>, active=<T>"
                 + " WHERE idConta=" + String.valueOf(dados.getIdConta());
         
         try {
@@ -174,6 +180,7 @@ public class ContaDAO implements CRUD<Conta, String>{
                     o.setDateCreation(new SimpleDateFormat("dd/MM/yyyy").parse(rs.getString("dtCreation")));
                     o.setSaldo(rs.getDouble("saldo"));
                     o.setTitular(rs.getString("cpf"));
+                    o.setActive(rs.getBoolean("active"));
                     l.add(o);
             }
             closeStatementAndResultSet(rs, st);
@@ -205,6 +212,7 @@ public class ContaDAO implements CRUD<Conta, String>{
                     o.setDateCreation(new SimpleDateFormat("dd/MM/yyyy").parse(rs.getString("dtCreation")));
                     o.setSaldo(rs.getDouble("saldo"));
                     o.setTitular(rs.getString("cpf"));
+                    o.setActive(rs.getBoolean("active"));
                     l.add(o);
             }
             closeStatementAndResultSet(rs, st);

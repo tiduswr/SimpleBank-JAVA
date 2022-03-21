@@ -3,42 +3,64 @@ package ui;
 import control.Controller;
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.ImageIcon;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import org.json.JSONObject;
+import ui.components.Notification;
 import ui.event.EventMenuSelected;
+import ui.forms.AprovarSolicitacao;
 
 public final class MenuCentral extends javax.swing.JFrame {
     private static boolean fullScreen = false;
     private static JFrame form;
     private Controller con;
+    private JSONObject o;
     
     public MenuCentral(Controller con) {
+        this.con = con;
+        o = new JSONObject(con.getUsuarioLogado());
         initComponents();
-
+        
         setBackground(Color.WHITE);
         this.setLocationRelativeTo(null);
-        this.con = con;
         this.setPreferredSize(this.getSize());
         this.setTitle("Simple Bank");
         this.setIconImage(new ImageIcon(getClass().getResource("/icons/mainIcon.png")).getImage());
         
+        form = MenuCentral.this;
         menuLateral.initMoving(MenuCentral.this);
         menuLateral.setTipoUsuario(new JSONObject(con.getUsuarioLogado()).getInt("tipo"));
         mainPanel.setLayout(new BorderLayout());
         menuLateral.addEventMenuSelected(new EventMenuSelected(){
+            boolean isCliente = o.getInt("tipo") == 0;
             @Override
             public void selected(int index){
                 switch (index) {
                     case 1:
-                        
+                        if(isCliente){
+                            
+                        }else{
+                            setForm(new AprovarSolicitacao(con));
+                        }
                         break;
                     case 2:
-                        
+                        if(isCliente){
+                            
+                        }else{
+                            
+                        }
                         break;
                     case 3:
-                        
+                        if(isCliente){
+                            
+                        }else{
+                            con.disconnectDB();
+                            dispose();
+                        }
+                        break;
                     case 4:
                         
                         break;
@@ -46,13 +68,24 @@ public final class MenuCentral extends javax.swing.JFrame {
                         
                         break;
                     case 6:
-                        
+                        con.disconnectDB();
+                        dispose();
                         break;
                     default:
                         break;
                 }
             }
         });
+        this.addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosing(WindowEvent e) {
+                con.disconnectDB();
+                super.windowClosing(e);
+            }
+        });
+        Notification n = new Notification(this, Notification.Type.SUCESS, 
+                                            Notification.Location.BOTTOM_RIGHT, "Seja bem vindo!");
+        n.showNotification();
     }
 
     @SuppressWarnings("unchecked")
@@ -60,7 +93,7 @@ public final class MenuCentral extends javax.swing.JFrame {
     private void initComponents() {
 
         panelBorder = new ui.centralmenu.PanelBorder();
-        menuLateral = new ui.centralmenu.MenuLateral();
+        menuLateral = new ui.centralmenu.MenuLateral(o.getInt("tipo"));
         mainPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -69,17 +102,7 @@ public final class MenuCentral extends javax.swing.JFrame {
         panelBorder.setForeground(new java.awt.Color(255, 255, 255));
 
         mainPanel.setOpaque(false);
-
-        javax.swing.GroupLayout mainPanelLayout = new javax.swing.GroupLayout(mainPanel);
-        mainPanel.setLayout(mainPanelLayout);
-        mainPanelLayout.setHorizontalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 698, Short.MAX_VALUE)
-        );
-        mainPanelLayout.setVerticalGroup(
-            mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 0, Short.MAX_VALUE)
-        );
+        mainPanel.setLayout(new java.awt.CardLayout());
 
         javax.swing.GroupLayout panelBorderLayout = new javax.swing.GroupLayout(panelBorder);
         panelBorder.setLayout(panelBorderLayout);
@@ -88,7 +111,7 @@ public final class MenuCentral extends javax.swing.JFrame {
             .addGroup(panelBorderLayout.createSequentialGroup()
                 .addComponent(menuLateral, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 698, Short.MAX_VALUE)
                 .addContainerGap())
         );
         panelBorderLayout.setVerticalGroup(

@@ -4,6 +4,8 @@ import control.Controller;
 import java.awt.Color;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import javax.swing.ImageIcon;
@@ -44,7 +46,13 @@ public final class Registrar extends javax.swing.JFrame {
             }
         
         });
-        
+        this.addWindowListener(new WindowAdapter(){
+            @Override
+            public void windowClosing(WindowEvent e) {
+                new Login(con).setVisible(true);
+                super.windowClosing(e);
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -150,7 +158,7 @@ public final class Registrar extends javax.swing.JFrame {
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(txtRua, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(txtNumero, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                        .addComponent(txtNumero, javax.swing.GroupLayout.DEFAULT_SIZE, 298, Short.MAX_VALUE))
                     .addGroup(mainPanelLayout.createSequentialGroup()
                         .addComponent(txtCidade, javax.swing.GroupLayout.PREFERRED_SIZE, 260, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
@@ -160,9 +168,9 @@ public final class Registrar extends javax.swing.JFrame {
                     .addComponent(txtCargo, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                 .addContainerGap())
             .addGroup(mainPanelLayout.createSequentialGroup()
-                .addGap(169, 169, 169)
+                .addGap(202, 202, 202)
                 .addComponent(btSolicita, javax.swing.GroupLayout.PREFERRED_SIZE, 160, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap(170, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         mainPanelLayout.setVerticalGroup(
             mainPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -262,7 +270,7 @@ public final class Registrar extends javax.swing.JFrame {
                     Notification n = new Notification(this, Notification.Type.SUCESS, 
                                                     Notification.Location.BOTTOM_RIGHT, response.getString("message"));
                     n.showNotification();
-                    System.out.println(con.insertUsuario(toJsonUsuario().toString()));
+                    con.insertUsuario(toJsonUsuario().toString());
                 }
             }
         }else{
