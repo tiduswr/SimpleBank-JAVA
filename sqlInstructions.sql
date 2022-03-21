@@ -14,7 +14,6 @@ numeroTelefone              TEXT NOT NULL);
 CREATE TABLE IF NOT EXISTS clientes (
 idCliente              INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 dtCadastro             TEXT(10) NOT NULL,
-active                 INTEGER NOT NULL,
 idPessoa               INTEGER NOT NULL,
 FOREIGN KEY(idPessoa) REFERENCES pessoas(id) ON DELETE CASCADE ON UPDATE CASCADE);
 CREATE TABLE IF NOT EXISTS administradores (
@@ -27,6 +26,7 @@ CREATE TABLE IF NOT EXISTS usuarios (
 idUser                 INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 senha                  TEXT NOT NULL,
 tipo                   INTEGER NOT NULL,
+active                 INTEGER NOT NULL,
 idPessoa               INTEGER NOT NULL,
 FOREIGN KEY(idPessoa) REFERENCES pessoas(id) ON DELETE CASCADE ON UPDATE CASCADE);
 CREATE TABLE IF NOT EXISTS contas (

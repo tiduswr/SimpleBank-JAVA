@@ -9,6 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import model.Administrador;
 import model.Cliente;
 import model.Endereco;
 import model.Telefone;
@@ -45,11 +46,6 @@ public class ClienteDAO implements CRUD<Cliente, String>{
     private String createSqlCliente(String sql, Cliente dados){
         SimpleDateFormat sdf = new SimpleDateFormat("dd/MM/yyyy");
         sql = sql.replaceFirst("<T>", sdf.format(dados.getDtCadastro()));
-        if(dados.isActive()){
-            sql = sql.replaceFirst("<T>", "1");
-        }else{
-            sql = sql.replaceFirst("<T>", "0");
-        }
         
         return sql;
     }
@@ -57,13 +53,15 @@ public class ClienteDAO implements CRUD<Cliente, String>{
     @Override
     public boolean create(Cliente dados) {
         Cliente find = read(dados.getCpf());
+        Administrador findAdm = new AdministradorDAO(this.con).read(dados.getCpf());
+        
         String sqlPessoa = "INSERT INTO pessoas (cpf, nome, dtNascimento, email, bairro, cidade, estado, "
                 + "numCasa, rua, dddTelefone, numeroTelefone) " 
                 + "VALUES ('<T>', '<T>', '<T>', '<T>', '<T>', '<T>', '<T>', <T>, '<T>', <T>, '<T>')";
-        String sqlCliente= "INSERT INTO clientes (dtCadastro, active, idPessoa) " 
-                + "VALUES ('<T>', <T>, <T>)";
+        String sqlCliente= "INSERT INTO clientes (dtCadastro, idPessoa) " 
+                + "VALUES ('<T>', <T> )";
         try {
-            if(find == null){
+            if(find == null && findAdm == null){
                 Statement st = con.createStatement();
                 long idPessoa = getIdPessoa(dados.getCpf());
                 
@@ -163,19 +161,11 @@ public class ClienteDAO implements CRUD<Cliente, String>{
         String sql = "UPDATE pessoas SET cpf='<T>', nome='<T>', dtNascimento='<T>', email='<T>', bairro='<T>', "
                 + "cidade='<T>', estado='<T>', numCasa=<T>, rua='<T>', dddTelefone=<T>, numeroTelefone='<T>'"
                 + " WHERE id=" + String.valueOf(dados.getIdDatabase());
-        String sqlClientes = "UPDATE clientes SET active=<T> WHERE idPessoa=" + String.valueOf(dados.getIdDatabase());
         
         try {
             sql = createSqlPessoa(sql ,dados);
             Statement st = con.createStatement();
             st.execute(sql);
-            
-            if(dados.isActive()){
-                sqlClientes = sqlClientes.replaceFirst("<T>", "1");
-            }else{
-                sqlClientes = sqlClientes.replaceFirst("<T>", "0");
-            }
-            st.execute(sqlClientes);
             
             closeStatementAndResultSet(null, st);
             

@@ -68,11 +68,11 @@ public class UsuarioDAOTest {
         Assertions.assertTrue(daoAdm.create(o));
         
         o = daoAdm.read(o.getCpf());
-        Usuario user = new Usuario(o.getIdDatabase(), o.getCpf(), "admLife", Usuario.TipoUsuario.ADM);
+        Usuario user = new Usuario(o.getIdDatabase(), o.getCpf(), "admLife", Usuario.TipoUsuario.ADM, true, true);
         Assertions.assertTrue(dao.create(user));
         
         o = daoAdm.read("999.999.999-99");
-        user = new Usuario(o.getIdDatabase(), o.getCpf(), "admLife", Usuario.TipoUsuario.CLIENTE);
+        user = new Usuario(o.getIdDatabase(), o.getCpf(), "admLife", Usuario.TipoUsuario.CLIENTE, true, true);
         
         Assertions.assertTrue(dao.create(user));
         System.out.println("    - Data saved in database!");

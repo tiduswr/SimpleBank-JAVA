@@ -12,11 +12,36 @@ import util.*;
 
 public class Controller {
     private DatabaseConnect con;
+    private Usuario logged = null;
     
     public Controller(){
         con = new SQLiteConnection();
         con.connect();
         CreateDataBase.createDataBaseAndTables(con);
+    }
+    
+    public String getUsuarioLogado(){
+        return logged.toJson().toString();
+    }
+    
+    public void disconnectDB(){
+        if(con != null) con.closeConnection();
+    }
+    
+    public boolean login(String cpf, String senha){
+        UsuarioDAO dao = new UsuarioDAO(this.con.getConnection());
+        Usuario response = dao.read(cpf);
+        
+        if(response != null){
+            Usuario teste = new Usuario(-1, response.getCpf(), senha, response.getTipo(), response.isActive(), true);
+            if(teste.getSenha().equals(response.getSenha())){
+                this.logged = response;
+                return true;
+            }
+        }
+        
+        return false;
+        
     }
     
     private JSONArray filterErrors(JSONArray arr){
@@ -26,7 +51,7 @@ public class Controller {
     public String insertAdministrador(String json){
         
         JSONArray errors = new JSONArray(DataValidator.adminIsValid(json));
-        if(DataValidator.containsMessageErrors(json)){
+        if(DataValidator.containsMessageErrors(errors.toString())){
             return filterErrors(errors).toString();
         }
         
@@ -51,7 +76,7 @@ public class Controller {
     public String insertCliente(String json){
         
         JSONArray errors = new JSONArray(DataValidator.clienteIsValid(json));
-        if(DataValidator.containsMessageErrors(json)){
+        if(DataValidator.containsMessageErrors(errors.toString())){
             return filterErrors(errors).toString();
         }
         
@@ -76,11 +101,11 @@ public class Controller {
     public String insertUsuario(String json){
         
         JSONArray errors = new JSONArray(DataValidator.usuarioIsValid(json));
-        if(DataValidator.containsMessageErrors(json)){
+        if(DataValidator.containsMessageErrors(errors.toString())){
             return filterErrors(errors).toString();
         }
         
-        Usuario user = new Usuario(json);
+        Usuario user = new Usuario(json, true);
         UsuarioDAO dao = new UsuarioDAO(this.con.getConnection());
 
         if(dao.create(user)){
@@ -95,7 +120,7 @@ public class Controller {
     public String insertConta(String json){
         
         JSONArray errors = new JSONArray(DataValidator.contaIsValid(json));
-        if(DataValidator.containsMessageErrors(json)){
+        if(DataValidator.containsMessageErrors(errors.toString())){
             return filterErrors(errors).toString();
         }
         
@@ -285,7 +310,7 @@ public class Controller {
     public String updateAdministrador(String json){
         
         JSONArray errors = new JSONArray(DataValidator.adminIsValid(json));
-        if(DataValidator.containsMessageErrors(json)){
+        if(DataValidator.containsMessageErrors(errors.toString())){
             return filterErrors(errors).toString();
         }
         
@@ -310,7 +335,7 @@ public class Controller {
     public String updateCliente(String json){
         
         JSONArray errors = new JSONArray(DataValidator.adminIsValid(json));
-        if(DataValidator.containsMessageErrors(json)){
+        if(DataValidator.containsMessageErrors(errors.toString())){
             return filterErrors(errors).toString();
         }
         
@@ -332,14 +357,14 @@ public class Controller {
         
     }
     
-    public String updateUsuario(String json){
+    public String updateUsuario(String json, boolean criptSenha){
         
         JSONArray errors = new JSONArray(DataValidator.adminIsValid(json));
-        if(DataValidator.containsMessageErrors(json)){
+        if(DataValidator.containsMessageErrors(errors.toString())){
             return filterErrors(errors).toString();
         }
         
-        Usuario user = new Usuario(json);
+        Usuario user = new Usuario(json, criptSenha);
         UsuarioDAO dao = new UsuarioDAO(this.con.getConnection());
 
         if(dao.update(user)){
@@ -354,7 +379,7 @@ public class Controller {
     public String updateConta(String json){
         
         JSONArray errors = new JSONArray(DataValidator.contaIsValid(json));
-        if(DataValidator.containsMessageErrors(json)){
+        if(DataValidator.containsMessageErrors(errors.toString())){
             return filterErrors(errors).toString();
         }
         

@@ -48,7 +48,6 @@ public class DataValidator {
         JSONArray error = new JSONArray();
         
         pessoaIsValid(error, json);
-        error.put(ParseHelper.testIfIsBoolean(json, "active").toJson());
         error.put(ParseHelper.testIfIsDate(json, "dtCadastro").toJson());
         
         return error.toString();
@@ -61,6 +60,7 @@ public class DataValidator {
         error.put(ParseHelper.testIfIsCPF(json, "cpf").toJson());
         error.put(ParseHelper.testNotEmpty(json, "senha", -1).toJson());
         error.put(ParseHelper.testOnlyNumber(json, "tipo", -1).toJson());
+        error.put(ParseHelper.testIfIsBoolean(json, "active").toJson());
         
         return error.toString();
     }

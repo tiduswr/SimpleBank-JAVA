@@ -10,25 +10,34 @@ import org.json.JSONObject;
 public class Usuario implements JSONTransform{
     private String cpf, senha;
     private TipoUsuario tipo;
+    private boolean active;
     private long id;
     
-    public Usuario(long id, String cpf, String senha, TipoUsuario tipo) {
+    public Usuario(long id, String cpf, String senha, TipoUsuario tipo, boolean active, boolean cript) {
         this.id = id;
         this.cpf = cpf;
-        this.senha = criptografar(senha);
+        if(cript) 
+            this.senha = criptografar(senha);
+        else
+            this.senha = senha;
         this.tipo = tipo;
+        this.active = active;
     }
     
     public Usuario(){}
     
-    public Usuario(String json){
+    public Usuario(String json, boolean cript){
         JSONObject o = new JSONObject(json);
         this.id = o.getLong("idUser");
         this.cpf = o.getString("cpf");
-        this.senha = criptografar(o.getString("senha"));
+        if(cript)
+            this.senha = criptografar(o.getString("senha"));
+        else
+            this.senha = o.getString("senha");
         this.tipo = TipoUsuario.getByInt(o.getInt("tipo"));
+        this.active = o.getBoolean("active");
     }
-
+    
     public String getCpf() {
         return cpf;
     }
@@ -57,6 +66,14 @@ public class Usuario implements JSONTransform{
         this.id = id;
     }
 
+    public boolean isActive() {
+        return active;
+    }
+
+    public void setActive(boolean active) {
+        this.active = active;
+    }
+
     @Override
     public JSONObject toJson() {
         JSONObject o = new JSONObject();
@@ -65,7 +82,8 @@ public class Usuario implements JSONTransform{
         o.put("senha", getSenha());
         o.put("tipo", getTipo().getValue());
         o.put("idUser", getId());
-        
+        o.put("active", isActive());
+                
         return o;
     }
     

@@ -40,7 +40,6 @@ public class TransacaoDAOTest {
         
         o.setCpf("999.999.999-99");
         o.setDtCadastro(new Date());
-        o.setActive(true);
         o.setDtNascimento(new Date());
         o.setEmail("harllem@gmail.com");
         o.setIdDatabase(0);

@@ -23,7 +23,7 @@ public class UsuarioDAO implements CRUD<Usuario, String>{
     @Override
     public boolean create(Usuario dados) {
         Usuario find = read(dados.getCpf());
-        String sqlUsuario = "INSERT INTO usuarios (senha, tipo, idPessoa) VALUES ('<T>', <T>, <T>)";
+        String sqlUsuario = "INSERT INTO usuarios (senha, tipo, idPessoa, active) VALUES ('<T>', <T>, <T>, <T>)";
         String sqlSelect = "SELECT * FROM pessoas WHERE cpf = '" + dados.getCpf() + "'";
         
         try {
@@ -35,6 +35,12 @@ public class UsuarioDAO implements CRUD<Usuario, String>{
                 sqlUsuario = sqlUsuario.replaceFirst("<T>", String.valueOf(dados.getTipo().getValue()));
                 if(rs != null && !rs.isClosed()){
                     sqlUsuario = sqlUsuario.replaceFirst("<T>", String.valueOf(rs.getLong("id")));
+                    if(dados.isActive()){
+                        sqlUsuario = sqlUsuario.replaceFirst("<T>", "1");
+                    }else{
+                        sqlUsuario = sqlUsuario.replaceFirst("<T>", "0");
+                    }
+                    
                     st.execute(sqlUsuario);
                     closeStatementAndResultSet(rs, st);
                     return true;
@@ -59,9 +65,10 @@ public class UsuarioDAO implements CRUD<Usuario, String>{
 
             if(rs != null && !rs.isClosed()){
                 Usuario o = new Usuario(rs.getLong("idUser"), 
-                        rs.getString("cpf"), 
-                        rs.getString("senha"), 
-                        Usuario.TipoUsuario.getByInt(rs.getInt("tipo")));
+                rs.getString("cpf"), 
+                rs.getString("senha"), 
+                Usuario.TipoUsuario.getByInt(rs.getInt("tipo")),
+                rs.getBoolean("active"), false);
                 
                 closeStatementAndResultSet(rs, st);
 
@@ -78,7 +85,7 @@ public class UsuarioDAO implements CRUD<Usuario, String>{
 
     @Override
     public boolean update(Usuario dados) {
-        String sql = "UPDATE usuarios SET senha='<T>', tipo=<T>"
+        String sql = "UPDATE usuarios SET senha='<T>', tipo=<T>, active=<T>"
                 + " WHERE idUser =" + String.valueOf(dados.getId());
         
         try {
@@ -86,6 +93,11 @@ public class UsuarioDAO implements CRUD<Usuario, String>{
             
             sql = sql.replaceFirst("<T>", dados.getSenha());
             sql = sql.replaceFirst("<T>", String.valueOf(dados.getTipo().getValue()));
+            if(dados.isActive()){
+                sql = sql.replaceFirst("<T>", "1");
+            }else{
+                sql = sql.replaceFirst("<T>", "0");
+            }
             
             st.execute(sql);
             
@@ -137,7 +149,8 @@ public class UsuarioDAO implements CRUD<Usuario, String>{
                 Usuario o = new Usuario(rs.getLong("idUser"), 
                         rs.getString("cpf"), 
                         rs.getString("senha"), 
-                        Usuario.TipoUsuario.getByInt(rs.getInt("tipo")));
+                        Usuario.TipoUsuario.getByInt(rs.getInt("tipo")),
+                        rs.getBoolean("active"), false);
                 
                 l.add(o);
             }

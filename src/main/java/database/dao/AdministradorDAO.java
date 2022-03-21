@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.Administrador;
+import model.Cliente;
 import model.Endereco;
 import model.Telefone;
 import util.SQL_ERROR_LOG;
@@ -52,13 +53,14 @@ public class AdministradorDAO implements CRUD<Administrador, String>{
     @Override
     public boolean create(Administrador dados) {
         Administrador find = read(dados.getCpf());
+        Cliente findCliente = new ClienteDAO(this.con).read(dados.getCpf());
         String sqlPessoa = "INSERT INTO pessoas (cpf, nome, dtNascimento, email, bairro, cidade, estado, "
                 + "numCasa, rua, dddTelefone, numeroTelefone) " 
                 + "VALUES ('<T>', '<T>', '<T>', '<T>', '<T>', '<T>', '<T>', <T>, '<T>', <T>, '<T>')";
         String sqlAdm= "INSERT INTO administradores (dtAdmissao, cargo, idPessoa) " 
                 + "VALUES ('<T>', '<T>', <T>)";
         try {
-            if(find == null){
+            if(find == null && findCliente == null){
                 Statement st = con.createStatement();
                 long idPessoa = getIdPessoa(dados.getCpf());
                 
