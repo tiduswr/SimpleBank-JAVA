@@ -13,6 +13,7 @@ import ui.components.Notification;
 import ui.event.EventMenuSelected;
 import ui.forms.AprovarSolicitacao;
 import ui.forms.GerirConta;
+import ui.forms.Historico;
 
 public final class MenuCentral extends javax.swing.JFrame {
     private static boolean fullScreen = false;
@@ -49,9 +50,9 @@ public final class MenuCentral extends javax.swing.JFrame {
                         break;
                     case 2:
                         if(isCliente){
-                            //historico
+                            setForm(new Historico(con, true));
                         }else{
-                            //historico
+                            setForm(new Historico(con, false));
                         }
                         break;
                     case 3:
@@ -155,7 +156,8 @@ public final class MenuCentral extends javax.swing.JFrame {
     }
     
     public static int getTipoUser(){
-        return o.getInt("tipo");
+        if(o != null) return o.getInt("tipo");
+        return -1;
     }
     
     public static boolean isFullScreen(){

@@ -183,6 +183,7 @@ public class ContaDAO implements CRUD<Conta, String>{
                     o.setSaldo(rs.getDouble("saldo"));
                     o.setTitular(rs.getString("cpf"));
                     o.setActive(rs.getBoolean("active"));
+                    o.setIdConta(rs.getLong("idConta"));
                     l.add(o);
             }
             closeStatementAndResultSet(rs, st);
@@ -214,6 +215,7 @@ public class ContaDAO implements CRUD<Conta, String>{
                     o.setDateCreation(new SimpleDateFormat("dd/MM/yyyy").parse(rs.getString("dtCreation")));
                     o.setSaldo(rs.getDouble("saldo"));
                     o.setTitular(rs.getString("cpf"));
+                    o.setIdConta(rs.getLong("idConta"));
                     o.setActive(rs.getBoolean("active"));
                     l.add(o);
             }

@@ -22,7 +22,9 @@ public final class MenuLateral extends javax.swing.JPanel {
     private int tipoUsuario;
     
     public MenuLateral() {
-        this.tipoUsuario = MenuCentral.getTipoUser();
+        if(!(MenuCentral.getFrame() == null)){
+            this.tipoUsuario = MenuCentral.getTipoUser();
+        }
         initComponents();
         setOpaque(false);
         listMenu.setOpaque(false);

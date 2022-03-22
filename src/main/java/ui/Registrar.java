@@ -227,13 +227,13 @@ public final class Registrar extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btSolicitaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btSolicitaActionPerformed
-        System.out.println("oi");
+
         if(txtSenha.getText() != null && !txtSenha.getText().equals("")){
             JSONObject j = toJson();
             JSONArray arr = null;
             JSONObject response = null;
             String teste;
-            System.out.println("ola denovo");
+            
             if(this.cbTipo.getSelectedItem() != null && ((String) this.cbTipo.getSelectedItem()).equals("Cliente")){
                 teste = con.insertCliente(j.toString());
             }else{
