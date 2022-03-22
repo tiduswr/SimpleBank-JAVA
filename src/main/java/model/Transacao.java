@@ -165,9 +165,9 @@ public class Transacao implements JSONTransform {
                 case 0:
                     return TipoTransacao.SAQUE;
                 case 1:
-                    return TipoTransacao.TRANSFERENCIA;
-                case 2:
                     return TipoTransacao.DEPOSITO;
+                case 2:
+                    return TipoTransacao.TRANSFERENCIA;
                 default:
                     return null;
             }

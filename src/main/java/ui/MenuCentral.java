@@ -14,6 +14,7 @@ import ui.event.EventMenuSelected;
 import ui.forms.AprovarSolicitacao;
 import ui.forms.GerirConta;
 import ui.forms.Historico;
+import ui.forms.InativarRegistro;
 
 public final class MenuCentral extends javax.swing.JFrame {
     private static boolean fullScreen = false;
@@ -24,6 +25,7 @@ public final class MenuCentral extends javax.swing.JFrame {
     public MenuCentral(Controller con) {
         this.con = con;
         o = new JSONObject(con.getUsuarioLogado());
+        form = MenuCentral.this;
         initComponents();
         
         setBackground(Color.WHITE);
@@ -32,7 +34,6 @@ public final class MenuCentral extends javax.swing.JFrame {
         this.setTitle("Simple Bank");
         this.setIconImage(new ImageIcon(getClass().getResource("/icons/mainIcon.png")).getImage());
         
-        form = MenuCentral.this;
         menuLateral.initMoving(MenuCentral.this);
         menuLateral.setTipoUsuario(new JSONObject(con.getUsuarioLogado()).getInt("tipo"));
         mainPanel.setLayout(new BorderLayout());
@@ -52,15 +53,14 @@ public final class MenuCentral extends javax.swing.JFrame {
                         if(isCliente){
                             setForm(new Historico(con, true));
                         }else{
-                            setForm(new Historico(con, false));
+                            setForm(new InativarRegistro(con));
                         }
                         break;
                     case 3:
                         if(isCliente){
                             solicitarConta();
                         }else{
-                            con.disconnectDB();
-                            dispose();
+                            setForm(new Historico(con, false));
                         }
                         break;
                     case 4:
@@ -112,11 +112,11 @@ public final class MenuCentral extends javax.swing.JFrame {
         );
         panelBorderLayout.setVerticalGroup(
             panelBorderLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addComponent(menuLateral, javax.swing.GroupLayout.DEFAULT_SIZE, 530, Short.MAX_VALUE)
             .addGroup(panelBorderLayout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(mainPanel, javax.swing.GroupLayout.DEFAULT_SIZE, 518, Short.MAX_VALUE)
                 .addContainerGap())
+            .addComponent(menuLateral, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
         );
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());

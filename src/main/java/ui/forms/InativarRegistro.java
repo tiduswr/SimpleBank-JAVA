@@ -7,17 +7,18 @@ import ui.MenuCentral;
 import ui.components.CustomButton;
 import ui.components.CustomTable;
 import ui.components.Notification;
-import ui.models.SolicitacaoTableModel;
+import ui.models.RegistrosTableModel;
 
-public class AprovarSolicitacao extends javax.swing.JPanel {
+public class InativarRegistro extends javax.swing.JPanel {
     private Controller con;
-    private SolicitacaoTableModel modelBusca;
+    private RegistrosTableModel modelBusca;
     
-    public AprovarSolicitacao(Controller con) {
+    public InativarRegistro(Controller con) {
         initComponents();
         
         this.con = con;
-        modelBusca = new SolicitacaoTableModel(con);
+        modelBusca = new RegistrosTableModel(con);
+        btInativa.setStyle(CustomButton.ButtonStyle.DESTRUCTIVE);
         this.tblSolicitacoes.setModel(modelBusca);
         this.tblSolicitacoes.setAutoCreateRowSorter(true);
         CustomTable.setBasicScrollConfigurations(tblScroll);
@@ -32,8 +33,7 @@ public class AprovarSolicitacao extends javax.swing.JPanel {
         tblScroll = new javax.swing.JScrollPane();
         tblSolicitacoes = new ui.components.CustomTable();
         formTitle = new javax.swing.JLabel();
-        btAprova = new ui.components.CustomButton();
-        btRecusa = new ui.components.CustomButton();
+        btInativa = new ui.components.CustomButton();
 
         tableTitle.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
         tableTitle.setForeground(new java.awt.Color(76, 76, 76));
@@ -58,20 +58,13 @@ public class AprovarSolicitacao extends javax.swing.JPanel {
         formTitle.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
         formTitle.setForeground(new java.awt.Color(76, 76, 76));
         formTitle.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        formTitle.setText("ATIVAR COTAS/USUARIOS");
+        formTitle.setText("INATIVAR CONTA/USUARIO");
 
-        btAprova.setText("APROVAR");
-        btAprova.addActionListener(new java.awt.event.ActionListener() {
+        btInativa.setText("INATIVAR");
+        btInativa.setStyle(CustomButton.ButtonStyle.DESTRUCTIVE);
+        btInativa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btAprovaActionPerformed(evt);
-            }
-        });
-
-        btRecusa.setText("RECUSAR");
-        btRecusa.setStyle(CustomButton.ButtonStyle.DESTRUCTIVE);
-        btRecusa.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btRecusaActionPerformed(evt);
+                btInativaActionPerformed(evt);
             }
         });
 
@@ -85,9 +78,8 @@ public class AprovarSolicitacao extends javax.swing.JPanel {
                     .addComponent(formTitle, javax.swing.GroupLayout.DEFAULT_SIZE, 686, Short.MAX_VALUE)
                     .addComponent(tblScroll, javax.swing.GroupLayout.Alignment.TRAILING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
-                        .addComponent(btAprova, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(btRecusa, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addGap(0, 0, Short.MAX_VALUE)
+                        .addComponent(btInativa, javax.swing.GroupLayout.PREFERRED_SIZE, 125, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -98,9 +90,7 @@ public class AprovarSolicitacao extends javax.swing.JPanel {
                 .addGap(18, 18, 18)
                 .addComponent(tblScroll, javax.swing.GroupLayout.DEFAULT_SIZE, 417, Short.MAX_VALUE)
                 .addGap(18, 18, 18)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btAprova, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btRecusa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(btInativa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
 
@@ -116,7 +106,7 @@ public class AprovarSolicitacao extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
-    private void btAprovaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btAprovaActionPerformed
+    private void btInativaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btInativaActionPerformed
         int row = tblSolicitacoes.getSelectedRow();
         if(row != -1){
             JSONObject obj = modelBusca.getJsonAt(row);
@@ -129,7 +119,7 @@ public class AprovarSolicitacao extends javax.swing.JPanel {
                     JSONObject conta = new JSONObject(con.readConta(obj.getString("agencia") + 
                                                                     "-" + obj.getString("numeroConta")));
                     conta.remove("active");
-                    conta.put("active", true);
+                    conta.put("active", false);
                     
                     teste = con.updateConta(conta.toString());
                     
@@ -170,7 +160,7 @@ public class AprovarSolicitacao extends javax.swing.JPanel {
                 default:
                     JSONObject user = new JSONObject(con.readUsuario(obj.getString("cpf")));
                     user.remove("active");
-                    user.put("active", true);
+                    user.put("active", false);
                     
                     teste = con.updateUsuario(user.toString(), false);
                     
@@ -215,54 +205,11 @@ public class AprovarSolicitacao extends javax.swing.JPanel {
                                         Notification.Location.BOTTOM_RIGHT, "Selecione um item da tabela!");
             n.showNotification();
         }
-    }//GEN-LAST:event_btAprovaActionPerformed
-
-    private void btRecusaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btRecusaActionPerformed
-        int row = tblSolicitacoes.getSelectedRow();
-        if(row != -1){
-            JSONObject obj = modelBusca.getJsonAt(row);
-            JSONObject response;
-            Notification n;
-            
-            switch(obj.getString("tipoDesc")){
-                case "Conta Bancaria":
-                    con.deleteConta(obj.getString("agencia") + "-" + obj.getString("numeroConta"));
-                    n = new Notification(MenuCentral.getFrame(), Notification.Type.SUCESS, 
-                                    Notification.Location.BOTTOM_RIGHT, "Conta Deletada!");
-                    modelBusca.removeRow(row);
-                    n.showNotification();
-                    break;
-                default:
-                    response = new JSONObject(con.deleteUsuario(obj.getString("cpf")));
-                    
-                    if(response.getString("type").equals("error")){
-                        n = new Notification(MenuCentral.getFrame(), Notification.Type.WARNING, 
-                                        Notification.Location.BOTTOM_RIGHT, response.getString("message"));
-                    }else{
-                        if(obj.getString("tipoDesc").equals("Cliente")){
-                            con.deleteCliente(obj.getString("cpf"));
-                        }else{
-                            con.deleteAdministrador(obj.getString("cpf"));
-                        }
-                        n = new Notification(MenuCentral.getFrame(), Notification.Type.SUCESS, 
-                                        Notification.Location.BOTTOM_RIGHT, response.getString("message"));
-                        modelBusca.removeRow(row);
-                    }
-                    n.showNotification();
-                    break;
-            }
-            
-        }else{
-            Notification n = new Notification(MenuCentral.getFrame(), Notification.Type.INFO, 
-                                        Notification.Location.BOTTOM_RIGHT, "Selecione um item da tabela!");
-            n.showNotification();
-        }
-    }//GEN-LAST:event_btRecusaActionPerformed
+    }//GEN-LAST:event_btInativaActionPerformed
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private ui.components.CustomButton btAprova;
-    private ui.components.CustomButton btRecusa;
+    private ui.components.CustomButton btInativa;
     private javax.swing.JLabel formTitle;
     private javax.swing.JPanel jPanel1;
     private javax.swing.JLabel tableTitle;

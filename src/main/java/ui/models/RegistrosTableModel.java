@@ -2,24 +2,19 @@ package ui.models;
 
 import control.Controller;
 import java.util.ArrayList;
-import javax.swing.table.AbstractTableModel;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-public class SolicitacaoTableModel extends AbstractTableModel{
-    
-    protected ArrayList<JSONObject> data;
-    protected final String[] header = {"CPF", "Nome", "Data Sol.", "Tipo Sol."};
-    
-    public SolicitacaoTableModel(){}
-    
-    public SolicitacaoTableModel(Controller con){
+public class RegistrosTableModel extends SolicitacaoTableModel{
+
+    public RegistrosTableModel(Controller con) {
+        super();
         JSONArray arr = new JSONArray(con.listUsuario());
         data = new ArrayList<>();
         
         arr.forEach(e -> {
             JSONObject o = new JSONObject(e.toString());
-            if(!o.getBoolean("active")){
+            if(o.getBoolean("active")){
                 data.add(o);
             }
         });
@@ -49,7 +44,7 @@ public class SolicitacaoTableModel extends AbstractTableModel{
         arr = new JSONArray(con.listConta(null));
         arr.forEach(e -> {
             JSONObject o = new JSONObject(e.toString());
-            if(!o.getBoolean("active")){
+            if(o.getBoolean("active")){
                 String aux = con.readAdministrador(o.getString("cpfTitular"));
                 if(aux == null){
                     aux = con.readCliente(o.getString("cpfTitular"));
@@ -68,53 +63,7 @@ public class SolicitacaoTableModel extends AbstractTableModel{
                 data.add(oNew);
             }
         });
-        
-    }
-    
-    
-    @Override
-    public String getColumnName(int c) {
-        return header[c];
-    }
-    
-    @Override
-    public int getRowCount() {
-        return data.size();
     }
 
-    @Override
-    public int getColumnCount() {
-        return header.length;
-    }
-
-    @Override
-    public Object getValueAt(int rowIndex, int columnIndex) {
-        JSONObject o = data.get(rowIndex);
-        
-        if(o != null){
-            switch(columnIndex){
-                case 0:
-                    return o.getString("cpf");
-                case 1:
-                    return o.getString("nome");
-                case 2:
-                    return o.getString("dtSol");
-                case 3:
-                    return o.getString("tipoDesc");
-            }
-        }
-        return null;
-    }
-    
-    public void removeRow(int r){
-        if(r != -1){
-            this.data.remove(r);
-            this.fireTableRowsDeleted(r, r);
-        }
-    }
-    
-    public JSONObject getJsonAt(int r){
-        return data.get(r);
-    }
     
 }

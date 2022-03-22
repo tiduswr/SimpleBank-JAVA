@@ -14,30 +14,37 @@ public class TrasacaoTableModel extends AbstractTableModel{
     public TrasacaoTableModel(Controller con, String cpf){
         data = new ArrayList<>();
         JSONArray arr = new JSONArray(con.listConta(cpf));
-        System.out.println(arr);
+        ArrayList<Long> ids = new ArrayList<>();
+        
         arr.forEach(e -> {
             JSONObject o = new JSONObject(e.toString());
-            
             if(o.getBoolean("active")){
-                JSONArray transacoes = new JSONArray(con.listTransacao(o.getLong("idConta")));
-                transacoes.forEach(t -> {
-                    JSONObject aux = new JSONObject(t.toString());
-                    JSONObject oNew = new JSONObject();
-
-                    JSONObject cc = aux.getJSONObject("from");
-                    oNew.put("from", cc.getString("agencia") + "-" + cc.getString("numeroConta"));
-
-                    cc = aux.getJSONObject("to");
-                    oNew.put("to", cc.getString("agencia") + "-" + cc.getString("numeroConta"));
-
-                    oNew.put("tipo", aux.getString("tipoDesc"));
-                    oNew.put("valMovimentado", aux.getDouble("valMovimentado"));
-                    oNew.put("dtMovimento", aux.getString("dtMovimento"));
-
-                    data.add(oNew);
-
-                });
+                ids.add(o.getLong("idConta"));
             }
+        });
+        
+        long[] idsArr = new long[ids.size()];
+        
+        for(int i = 0; i < ids.size(); i++){
+            idsArr[i] = ids.get(i);
+        }
+        
+        JSONArray transacoes = new JSONArray(con.listTransacao(idsArr));
+        transacoes.forEach(t -> {
+            JSONObject aux = new JSONObject(t.toString());
+            JSONObject oNew = new JSONObject();
+
+            JSONObject cc = aux.getJSONObject("from");
+            oNew.put("from", cc.getString("agencia") + "-" + cc.getString("numeroConta"));
+
+            cc = aux.getJSONObject("to");
+            oNew.put("to", cc.getString("agencia") + "-" + cc.getString("numeroConta"));
+
+            oNew.put("tipo", aux.getString("tipoDesc"));
+            oNew.put("valMovimentado", aux.getDouble("valMovimentado"));
+            oNew.put("dtMovimento", aux.getString("dtMovimento"));
+
+            data.add(oNew);
         });
         
     }

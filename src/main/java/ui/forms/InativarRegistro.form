@@ -56,9 +56,8 @@
                       <Component id="formTitle" pref="686" max="32767" attributes="0"/>
                       <Component id="tblScroll" alignment="1" max="32767" attributes="0"/>
                       <Group type="102" alignment="0" attributes="0">
-                          <Component id="btAprova" min="-2" pref="125" max="-2" attributes="0"/>
-                          <EmptySpace max="32767" attributes="0"/>
-                          <Component id="btRecusa" min="-2" pref="125" max="-2" attributes="0"/>
+                          <EmptySpace min="0" pref="0" max="32767" attributes="0"/>
+                          <Component id="btInativa" min="-2" pref="125" max="-2" attributes="0"/>
                       </Group>
                   </Group>
                   <EmptySpace max="-2" attributes="0"/>
@@ -73,10 +72,7 @@
                   <EmptySpace type="separate" max="-2" attributes="0"/>
                   <Component id="tblScroll" pref="417" max="32767" attributes="0"/>
                   <EmptySpace type="separate" max="-2" attributes="0"/>
-                  <Group type="103" groupAlignment="3" attributes="0">
-                      <Component id="btAprova" alignment="3" min="-2" max="-2" attributes="0"/>
-                      <Component id="btRecusa" alignment="3" min="-2" max="-2" attributes="0"/>
-                  </Group>
+                  <Component id="btInativa" min="-2" max="-2" attributes="0"/>
                   <EmptySpace max="-2" attributes="0"/>
               </Group>
           </Group>
@@ -113,26 +109,18 @@
               <Color blue="4c" green="4c" red="4c" type="rgb"/>
             </Property>
             <Property name="horizontalAlignment" type="int" value="0"/>
-            <Property name="text" type="java.lang.String" value="ATIVAR COTAS/USUARIOS"/>
+            <Property name="text" type="java.lang.String" value="INATIVAR CONTA/USUARIO"/>
           </Properties>
         </Component>
-        <Component class="ui.components.CustomButton" name="btAprova">
+        <Component class="ui.components.CustomButton" name="btInativa">
           <Properties>
-            <Property name="text" type="java.lang.String" value="APROVAR"/>
-          </Properties>
-          <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btAprovaActionPerformed"/>
-          </Events>
-        </Component>
-        <Component class="ui.components.CustomButton" name="btRecusa">
-          <Properties>
-            <Property name="text" type="java.lang.String" value="RECUSAR"/>
+            <Property name="text" type="java.lang.String" value="INATIVAR"/>
             <Property name="style" type="ui.components.CustomButton$ButtonStyle" editor="org.netbeans.modules.form.RADConnectionPropertyEditor">
               <Connection code="CustomButton.ButtonStyle.DESTRUCTIVE" type="code"/>
             </Property>
           </Properties>
           <Events>
-            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btRecusaActionPerformed"/>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btInativaActionPerformed"/>
           </Events>
         </Component>
       </SubComponents>

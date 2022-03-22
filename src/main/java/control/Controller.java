@@ -315,13 +315,13 @@ public class Controller {
         }
     }
     
-    public String listTransacao(long idOrigem){
+    public String listTransacao(long... idsOrigem){
         TransacaoDAO dao = new TransacaoDAO(this.con.getConnection());
         ArrayList<Transacao> l;
-        if(idOrigem == -1){
+        if(idsOrigem[0] == -1){
             l = dao.list();
         }else{
-            l = dao.list(idOrigem);
+            l = dao.list(idsOrigem);
         }
         
         if(l != null){
@@ -507,7 +507,7 @@ public class Controller {
                     t.setTo(cd);
                     t.setIdTransacao(0);
                     t.setValMovimentado(value);
-                    t.setTipo(Transacao.TipoTransacao.DEPOSITO);
+                    t.setTipo(Transacao.TipoTransacao.TRANSFERENCIA);
 
                     daot.create(t);
                     return new Message("Transferencia concluida!", "Os valores foram transferidos entre as contas!", 

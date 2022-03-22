@@ -213,13 +213,20 @@ public class TransacaoDAO implements CRUD<Transacao, Long>{
         return null;
     }
     
-    public ArrayList<Transacao> list(long id) {
+    public ArrayList<Transacao> list(long... ids) {
         String sql = "SELECT * FROM contas " +
                     "INNER JOIN pessoas " +
                     "ON pessoas.id = contas.idPessoa " +
                     "INNER JOIN transacoes ON " +
                     "contas.idConta = transacoes.idContaOrigem OR contas.idConta = transacoes.idContaDestino " +
-                    "WHERE contas.idConta = " + String.valueOf(id);
+                    "WHERE contas.idConta = " + String.valueOf(ids[0]);
+        
+        if(ids.length > 1){
+            for(int i = 1; i < ids.length; i++){
+                sql = sql + " OR contas.idConta = " + String.valueOf(ids[i]);
+            }
+            sql = sql + " GROUP BY transacoes.idTransacao";
+        }
         
         try {
             Statement st = con.createStatement();

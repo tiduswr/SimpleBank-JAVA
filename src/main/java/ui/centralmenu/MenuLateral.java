@@ -45,7 +45,8 @@ public final class MenuLateral extends javax.swing.JPanel {
     
     private void initAdm(){
         this.listMenu.addItem(new ModelMenu("", "Ações do Administrador", ModelMenu.MenuType.TITLE));
-        this.listMenu.addItem(new ModelMenu("aprovar.png", "Aprovar Solicitações", ModelMenu.MenuType.MENU));
+        this.listMenu.addItem(new ModelMenu("aprovar.png", "Ativar Conta/Usuario", ModelMenu.MenuType.MENU));
+        this.listMenu.addItem(new ModelMenu("inativar.png", "Inativar Conta/Usuario", ModelMenu.MenuType.MENU));
         this.listMenu.addItem(new ModelMenu("historicoConta.png", "Histórico Completo", ModelMenu.MenuType.MENU));
         this.listMenu.addItem(new ModelMenu("logout1.png", "Sair", ModelMenu.MenuType.MENU));
     }
