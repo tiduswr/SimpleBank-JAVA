@@ -21,8 +21,8 @@ public final class MenuLateral extends javax.swing.JPanel {
     private static Rectangle r = GraphicsEnvironment.getLocalGraphicsEnvironment().getMaximumWindowBounds();
     private int tipoUsuario;
     
-    public MenuLateral(int tipoUsuario) {
-        this.tipoUsuario = tipoUsuario;
+    public MenuLateral() {
+        this.tipoUsuario = MenuCentral.getTipoUser();
         initComponents();
         setOpaque(false);
         listMenu.setOpaque(false);
@@ -32,12 +32,10 @@ public final class MenuLateral extends javax.swing.JPanel {
             initAdm();
         }
     }
-
+    
     private void initUsuario(){
         this.listMenu.addItem(new ModelMenu("", "Ações do Usuário", ModelMenu.MenuType.TITLE));
-        this.listMenu.addItem(new ModelMenu("saque.png", "Sacar", ModelMenu.MenuType.MENU));
-        this.listMenu.addItem(new ModelMenu("deposito.png", "Depositar", ModelMenu.MenuType.MENU));
-        this.listMenu.addItem(new ModelMenu("transferencia.png", "Transferir", ModelMenu.MenuType.MENU));
+        this.listMenu.addItem(new ModelMenu("transferencia.png", "Gerir Contas", ModelMenu.MenuType.MENU));
         this.listMenu.addItem(new ModelMenu("historicoConta.png", "Histórico", ModelMenu.MenuType.MENU));
         this.listMenu.addItem(new ModelMenu("solicitarConta.png", "Solicitar Nova Conta", ModelMenu.MenuType.MENU));
         this.listMenu.addItem(new ModelMenu("logout1.png", "Sair", ModelMenu.MenuType.MENU));

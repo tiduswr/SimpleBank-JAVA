@@ -1,5 +1,6 @@
 package model;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -119,7 +120,7 @@ public class Conta implements JSONTransform{
     @Override
     public JSONObject toJson() {
         JSONObject json = new JSONObject();
-
+        
         json.put("agencia", getAgencia());
         json.put("numeroConta", getNumeroConta());
         json.put("cpfTitular", getCpfTitular());

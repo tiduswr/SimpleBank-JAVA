@@ -12,12 +12,13 @@ import org.json.JSONObject;
 import ui.components.Notification;
 import ui.event.EventMenuSelected;
 import ui.forms.AprovarSolicitacao;
+import ui.forms.GerirConta;
 
 public final class MenuCentral extends javax.swing.JFrame {
     private static boolean fullScreen = false;
     private static JFrame form;
     private Controller con;
-    private JSONObject o;
+    private static JSONObject o;
     
     public MenuCentral(Controller con) {
         this.con = con;
@@ -41,45 +42,27 @@ public final class MenuCentral extends javax.swing.JFrame {
                 switch (index) {
                     case 1:
                         if(isCliente){
-                            
+                            setForm(new GerirConta(con));
                         }else{
                             setForm(new AprovarSolicitacao(con));
                         }
                         break;
                     case 2:
                         if(isCliente){
-                            
+                            //historico
                         }else{
-                            
+                            //historico
                         }
                         break;
                     case 3:
                         if(isCliente){
-                            
+                            solicitarConta();
                         }else{
                             con.disconnectDB();
                             dispose();
                         }
                         break;
                     case 4:
-                        
-                        break;
-                    case 5:
-                        //Solicitação de Nova Conta
-                        JSONObject response = new JSONObject(con.solicitarConta(o.getString("cpf")));
-                        Notification.Type tp;
-                                
-                        if(response.getString("type").equals("error")){
-                            tp = Notification.Type.WARNING;
-                        }else{
-                            tp = Notification.Type.SUCESS;
-                        }
-                        
-                        Notification n = new Notification(MenuCentral.getFrame(), tp, 
-                                            Notification.Location.BOTTOM_RIGHT, response.getString("message"));
-                        n.showNotification();
-                        break;
-                    case 6:
                         con.disconnectDB();
                         dispose();
                         break;
@@ -105,7 +88,7 @@ public final class MenuCentral extends javax.swing.JFrame {
     private void initComponents() {
 
         panelBorder = new ui.centralmenu.PanelBorder();
-        menuLateral = new ui.centralmenu.MenuLateral(o.getInt("tipo"));
+        menuLateral = new ui.centralmenu.MenuLateral();
         mainPanel = new javax.swing.JPanel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
@@ -149,11 +132,30 @@ public final class MenuCentral extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
     
+    private void solicitarConta(){
+        JSONObject response = new JSONObject(con.solicitarConta(o.getString("cpf")));
+        Notification.Type tp;
+
+        if(response.getString("type").equals("error")){
+            tp = Notification.Type.WARNING;
+        }else{
+            tp = Notification.Type.SUCESS;
+        }
+
+        Notification n = new Notification(MenuCentral.getFrame(), tp, 
+                            Notification.Location.BOTTOM_RIGHT, response.getString("message"));
+        n.showNotification();
+    }
+    
     private void setForm(JComponent c){
         mainPanel.removeAll();
         mainPanel.add(c);
         mainPanel.revalidate();
         mainPanel.repaint();
+    }
+    
+    public static int getTipoUser(){
+        return o.getInt("tipo");
     }
     
     public static boolean isFullScreen(){

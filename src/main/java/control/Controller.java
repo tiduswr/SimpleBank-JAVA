@@ -437,6 +437,19 @@ public class Controller {
         
         if(cc != null){
             if(cc.depositar(value) && dao.update(cc)){
+                
+                TransacaoDAO daot = new TransacaoDAO(this.con.getConnection());
+                Transacao t = new Transacao();
+                
+                t.setDtMovimento(new Date());
+                t.setFrom(cc);
+                t.setTo(cc);
+                t.setIdTransacao(0);
+                t.setValMovimentado(value);
+                t.setTipo(Transacao.TipoTransacao.DEPOSITO);
+                
+                daot.create(t);
+                
                 return new Message("Deposito concluido!", "O depósito foi feito sem erros!", 
                         "noterror", "none").toJson().toString(); 
             }else{
@@ -456,14 +469,25 @@ public class Controller {
         
         if(cc != null){
             if(cc.sacar(value) && dao.update(cc)){
-                return new Message("Deposito concluido!", "O depósito foi feito sem erros!", 
+                TransacaoDAO daot = new TransacaoDAO(this.con.getConnection());
+                Transacao t = new Transacao();
+                
+                t.setDtMovimento(new Date());
+                t.setFrom(cc);
+                t.setTo(cc);
+                t.setIdTransacao(0);
+                t.setValMovimentado(value);
+                t.setTipo(Transacao.TipoTransacao.SAQUE);
+                
+                daot.create(t);
+                return new Message("Saque concluido!", "O depósito foi feito sem erros!", 
                         "noterror", "none").toJson().toString(); 
             }else{
                 return new Message("Saque falhou!", "Você não tem saldo suficiente!", 
                         "error", "none").toJson().toString();
             }
         }else{
-            return new Message("Deposito falhou!", "A conta para depósito não foi encontrado!", 
+            return new Message("Saque falhou!", "A conta para depósito não foi encontrado!", 
                         "error", "none").toJson().toString(); 
         }
         
@@ -477,8 +501,19 @@ public class Controller {
         if(co != null && cd != null){
             if(co.transferir(value, cd)){
                 if(dao.update(co) && dao.update(cd)){
+                    TransacaoDAO daot = new TransacaoDAO(this.con.getConnection());
+                    Transacao t = new Transacao();
+
+                    t.setDtMovimento(new Date());
+                    t.setFrom(co);
+                    t.setTo(cd);
+                    t.setIdTransacao(0);
+                    t.setValMovimentado(value);
+                    t.setTipo(Transacao.TipoTransacao.DEPOSITO);
+
+                    daot.create(t);
                     return new Message("Transferencia concluida!", "Os valores foram transferidos entre as contas!", 
-                        "error", "none").toJson().toString();
+                        "noterror", "none").toJson().toString();
                 }else{
                     return new Message("Transferencia falhou!", "Erro ao salvar no banco de dados!", 
                         "error", "none").toJson().toString();

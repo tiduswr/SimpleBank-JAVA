@@ -67,9 +67,6 @@
       </Layout>
       <SubComponents>
         <Component class="ui.centralmenu.MenuLateral" name="menuLateral">
-          <AuxValues>
-            <AuxValue name="JavaCodeGenerator_CreateCodeCustom" type="java.lang.String" value="new ui.centralmenu.MenuLateral(o.getInt(&quot;tipo&quot;))"/>
-          </AuxValues>
         </Component>
         <Container class="javax.swing.JPanel" name="mainPanel">
           <Properties>
