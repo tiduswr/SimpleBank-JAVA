@@ -3,11 +3,14 @@ package control;
 import database.*;
 import database.dao.*;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import model.*;
 import org.json.JSONArray;
+import org.json.JSONObject;
 import util.*;
 
 public class Controller {
@@ -42,6 +45,33 @@ public class Controller {
         
         return false;
         
+    }
+    
+    public String solicitarConta(String cpf){
+        ContaDAO dao = new ContaDAO(this.con.getConnection());
+        Conta cc = new Conta();
+        
+        String lastId = String.valueOf(dao.getLastId());
+        String agencia = "001";
+        String leftCpfKeys = cpf.substring(0, 3);
+        String rightCpfKeys = cpf.substring(9,11);
+        String numeroConta = leftCpfKeys + "." + lastId + "." + rightCpfKeys;
+                
+        cc.setActive(false);
+        cc.setAgencia(agencia);
+        cc.setDateCreation(new Date());
+        cc.setIdConta(0);
+        cc.setNumeroConta(numeroConta);
+        cc.setSaldo(0);
+        cc.setTitular(cpf);
+        
+        if(dao.create(cc)){
+            return new Message("Solicitação Realizada!", "A sua conta foi enviada para aprovação!", 
+                        "noterror", "none").toJson().toString();
+        }else{
+            return new Message("ERRO!", "Um erro ocorreu na solicitação de Conta!", 
+                        "error", "none").toJson().toString();
+        }
     }
     
     private JSONArray filterErrors(JSONArray arr){

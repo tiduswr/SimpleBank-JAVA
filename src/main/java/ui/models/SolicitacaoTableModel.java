@@ -48,9 +48,9 @@ public class SolicitacaoTableModel extends AbstractTableModel{
         arr.forEach(e -> {
             JSONObject o = new JSONObject(e.toString());
             if(!o.getBoolean("active")){
-                String aux = con.readAdministrador(o.getString("cpf"));
+                String aux = con.readAdministrador(o.getString("cpfTitular"));
                 if(aux == null){
-                    aux = con.readCliente(o.getString("cpf"));
+                    aux = con.readCliente(o.getString("cpfTitular"));
                 }
                 
                 JSONObject pessoa = new JSONObject(aux);
@@ -58,7 +58,9 @@ public class SolicitacaoTableModel extends AbstractTableModel{
                 
                 oNew.put("cpf", o.getString("cpfTitular"));
                 oNew.put("dtSol", o.getString("dtCreation"));
-                oNew.put("tipoDesc", o.getString("Conta Bancaria"));
+                oNew.put("tipoDesc", "Conta Bancaria");
+                oNew.put("agencia", o.getString("agencia"));
+                oNew.put("numeroConta", o.getString("numeroConta"));
                 oNew.put("nome", pessoa.getString("nome"));
                 
                 data.add(oNew);

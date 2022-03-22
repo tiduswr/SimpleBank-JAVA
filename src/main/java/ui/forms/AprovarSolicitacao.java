@@ -119,6 +119,9 @@ public class AprovarSolicitacao extends javax.swing.JPanel {
         int row = tblSolicitacoes.getSelectedRow();
         if(row != -1){
             JSONObject obj = modelBusca.getJsonAt(row);
+            String teste;
+            JSONArray arr = null;
+            JSONObject response = null;
             
             switch(obj.getString("tipoDesc")){
                 case "Conta Bancaria":
@@ -126,23 +129,14 @@ public class AprovarSolicitacao extends javax.swing.JPanel {
                                                                     "-" + obj.getString("numeroConta")));
                     conta.remove("active");
                     conta.put("active", true);
-                    System.out.println(conta);
-                    break;
-                default:
-                    JSONObject user = new JSONObject(con.readUsuario(obj.getString("cpf")));
-                    user.remove("active");
-                    user.put("active", true);
                     
-                    String teste = con.updateUsuario(user.toString(), false);
-                    JSONArray arr = null;
-                    JSONObject response = null;
+                    teste = con.updateConta(conta.toString());
                     
                     if(teste != null && !teste.equals("")){
                         if(teste.charAt(0) == '['){
                             arr = new JSONArray(teste);
                         }else{
                             response = new JSONObject(teste);
-                            System.out.println(response);
                         }
                     }
                     
@@ -167,6 +161,48 @@ public class AprovarSolicitacao extends javax.swing.JPanel {
                             Notification n = new Notification(MenuCentral.getFrame(), Notification.Type.SUCESS, 
                                                             Notification.Location.BOTTOM_RIGHT, response.getString("message"));
                             n.showNotification();
+                            modelBusca.removeRow(row);
+                        }
+                    }
+                    
+                    break;
+                default:
+                    JSONObject user = new JSONObject(con.readUsuario(obj.getString("cpf")));
+                    user.remove("active");
+                    user.put("active", true);
+                    
+                    teste = con.updateUsuario(user.toString(), false);
+                    
+                    if(teste != null && !teste.equals("")){
+                        if(teste.charAt(0) == '['){
+                            arr = new JSONArray(teste);
+                        }else{
+                            response = new JSONObject(teste);
+                        }
+                    }
+                    
+                    if(arr != null){
+                        for(Object o : arr){
+                            JSONObject aux = new JSONObject(o.toString());
+                            if(aux.getString("type").equals("error") || aux.getString("type").equals("finderror") || 
+                                aux.getString("type").equals("nullerror")){
+                                Notification n = new Notification(MenuCentral.getFrame(), Notification.Type.WARNING, 
+                                                                Notification.Location.BOTTOM_RIGHT, aux.getString("message"));
+                                n.showNotification();
+                                break;
+                            }
+                        }
+                    }    
+                    if(response != null){
+                        if(response.getString("type").equals("error")){
+                            Notification n = new Notification(MenuCentral.getFrame(), Notification.Type.INFO, 
+                                                            Notification.Location.BOTTOM_RIGHT, response.getString("message"));
+                            n.showNotification();
+                        }else{
+                            Notification n = new Notification(MenuCentral.getFrame(), Notification.Type.SUCESS, 
+                                                            Notification.Location.BOTTOM_RIGHT, response.getString("message"));
+                            n.showNotification();
+                            modelBusca.removeRow(row);
                         }
                     }
                     
@@ -184,17 +220,20 @@ public class AprovarSolicitacao extends javax.swing.JPanel {
         int row = tblSolicitacoes.getSelectedRow();
         if(row != -1){
             JSONObject obj = modelBusca.getJsonAt(row);
+            JSONObject response;
+            Notification n;
             
             switch(obj.getString("tipoDesc")){
                 case "Conta Bancaria":
-                    JSONObject conta = new JSONObject(con.readConta(obj.getString("agencia") + 
-                                                                    "-" + obj.getString("numeroConta")));
-                    System.out.println(conta);
+                    con.deleteConta(obj.getString("agencia") + "-" + obj.getString("numeroConta"));
+                    n = new Notification(MenuCentral.getFrame(), Notification.Type.SUCESS, 
+                                    Notification.Location.BOTTOM_RIGHT, "Conta Deletada!");
+                    modelBusca.removeRow(row);
+                    n.showNotification();
                     break;
                 default:
-                    JSONObject response = new JSONObject(con.deleteUsuario(obj.getString("cpf")));
+                    response = new JSONObject(con.deleteUsuario(obj.getString("cpf")));
                     
-                    Notification n;
                     if(response.getString("type").equals("error")){
                         n = new Notification(MenuCentral.getFrame(), Notification.Type.WARNING, 
                                         Notification.Location.BOTTOM_RIGHT, response.getString("message"));

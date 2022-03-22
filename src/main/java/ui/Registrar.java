@@ -283,9 +283,13 @@ public final class Registrar extends javax.swing.JFrame {
 
     private JSONObject toJson(){
         JSONObject j = new JSONObject();
+        String cpf = txtCpf.getText();
+        cpf = cpf.replaceAll("\\.", "");
+        cpf = cpf.replaceAll("-", "");
+        cpf = cpf.substring(0,3)+"."+cpf.substring(3,6)+"."+cpf.substring(6,9)+"-"+cpf.substring(9,11);
         
         j.put("id", 0);
-        j.put("cpf", txtCpf.getText());
+        j.put("cpf", cpf);
         j.put("nome", txtNome.getText());
         j.put("dtNascimento", txtDtNascimento.getText());
         j.put("email", txtEmail.getText());

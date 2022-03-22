@@ -25,7 +25,7 @@ public class UsuarioDAO implements CRUD<Usuario, String>{
         Usuario find = read(dados.getCpf());
         String sqlUsuario = "INSERT INTO usuarios (senha, tipo, idPessoa, active) VALUES ('<T>', <T>, <T>, <T>)";
         String sqlSelect = "SELECT * FROM pessoas WHERE cpf = '" + dados.getCpf() + "'";
-        
+        System.out.println(find);
         try {
             if(find == null){
                 Statement st = con.createStatement();
@@ -71,7 +71,6 @@ public class UsuarioDAO implements CRUD<Usuario, String>{
                 rs.getBoolean("active"), false);
                 
                 closeStatementAndResultSet(rs, st);
-
                 return o;
             }
 

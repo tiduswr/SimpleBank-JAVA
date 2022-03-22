@@ -37,6 +37,22 @@ public class ParseHelper {
                     "O Campo " + field + " não foi encontrado!", "finderror", field);
         }
     }
+    
+    public static Message testOnlyNumber(String json, String field, int maxLen, String ignore){
+        JSONObject j = new JSONObject(json);
+        String aux = j.getString(field);
+        
+        for(int i = 0; i < ignore.length(); i++){
+            String c = ignore.substring(i,i+1);
+            aux = aux.replace(c, "");
+        }
+        
+        j.remove(field);
+        j.put(field, aux);
+        
+        return testOnlyNumber(j.toString(), field, maxLen);
+    }
+    
     public static Message testNotEmptyAlphabetic(String json, String field, int maxLen){
         JSONObject j = new JSONObject(json);
         

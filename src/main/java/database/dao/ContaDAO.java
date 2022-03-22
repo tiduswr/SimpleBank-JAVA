@@ -7,6 +7,8 @@ import java.sql.Statement;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import model.Conta;
 import util.SQL_ERROR_LOG;
 
@@ -224,6 +226,21 @@ public class ContaDAO implements CRUD<Conta, String>{
             SQL_ERROR_LOG.message("Error in create list of Contas! (Parse Error)", null);
         }
         return null;
+    }
+    
+    public long getLastId(){
+        String sql =  "SELECT MAX(idConta) FROM contas";
+        Statement st;
+        try {
+            st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            long response = rs.getLong("MAX(idConta)");
+            closeStatementAndResultSet(rs, st);
+            return response;
+        } catch (SQLException ex) {
+            Logger.getLogger(ContaDAO.class.getName()).log(Level.SEVERE, null, ex);
+            return -1;
+        }
     }
     
 }

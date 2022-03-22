@@ -67,7 +67,7 @@ public class DataValidator {
     
     private static void checkConta(JSONArray error, String json){
         error.put(ParseHelper.testOnlyNumber(json, "agencia", -1).toJson());
-        error.put(ParseHelper.testOnlyNumber(json, "numeroConta", -1).toJson());
+        error.put(ParseHelper.testOnlyNumber(json, "numeroConta", -1, ".").toJson());
         error.put(ParseHelper.testIfIsCPF(json, "cpfTitular").toJson());
         error.put(ParseHelper.testIfIsDouble(json, "saldo").toJson());
         error.put(ParseHelper.testOnlyNumber(json, "idConta", -1).toJson());

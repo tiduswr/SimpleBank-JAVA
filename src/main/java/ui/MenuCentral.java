@@ -65,7 +65,19 @@ public final class MenuCentral extends javax.swing.JFrame {
                         
                         break;
                     case 5:
+                        //Solicitação de Nova Conta
+                        JSONObject response = new JSONObject(con.solicitarConta(o.getString("cpf")));
+                        Notification.Type tp;
+                                
+                        if(response.getString("type").equals("error")){
+                            tp = Notification.Type.WARNING;
+                        }else{
+                            tp = Notification.Type.SUCESS;
+                        }
                         
+                        Notification n = new Notification(MenuCentral.getFrame(), tp, 
+                                            Notification.Location.BOTTOM_RIGHT, response.getString("message"));
+                        n.showNotification();
                         break;
                     case 6:
                         con.disconnectDB();
