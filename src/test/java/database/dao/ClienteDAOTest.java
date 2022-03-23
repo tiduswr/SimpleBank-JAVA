@@ -83,11 +83,11 @@ public class ClienteDAOTest {
         System.out.println("    - Trying to update " + cl.getName() + " on database...");
         
         Cliente cl = cdao.read("999.999.999-99");
-        System.out.println("Cliente old cpf -> " + cl.getCpf());
-        cl.setCpf("888.888.888-88");
+        System.out.println("Cliente old nome -> " + cl.getNome());
+        cl.setNome("Nome Alterado!");
         Assertions.assertTrue(cdao.update(cl));
-        cl = cdao.read("888.888.888-88");
-        System.out.println("Cliente new cpf -> " + cl.getCpf());
+        cl = cdao.read("999.999.999-99");
+        System.out.println("Cliente novo nome -> " + cl.getNome());
         
         System.out.println("    - Data updated in database!");
     }
@@ -112,7 +112,7 @@ public class ClienteDAOTest {
     public void testDelete() {
         System.out.println("    - Trying to delete " + cl.getName() + " on database...");
         
-        Assertions.assertTrue(cdao.delete("888.888.888-88"));
+        Assertions.assertTrue(cdao.delete("999.999.999-99"));
         Assertions.assertTrue(cdao.delete("777.777.777-77"));
         
         System.out.println("    - Data deleted in database!");

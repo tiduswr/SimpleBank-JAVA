@@ -29,23 +29,27 @@ public class TrasacaoTableModel extends AbstractTableModel{
             idsArr[i] = ids.get(i);
         }
         
-        JSONArray transacoes = new JSONArray(con.listTransacao(idsArr));
-        transacoes.forEach(t -> {
-            JSONObject aux = new JSONObject(t.toString());
-            JSONObject oNew = new JSONObject();
+        String response = con.listTransacao(idsArr);
+        if(response != null){
+            JSONArray transacoes = new JSONArray(con.listTransacao(idsArr));
+            transacoes.forEach(t -> {
+                JSONObject aux = new JSONObject(t.toString());
+                JSONObject oNew = new JSONObject();
 
-            JSONObject cc = aux.getJSONObject("from");
-            oNew.put("from", cc.getString("agencia") + "-" + cc.getString("numeroConta"));
+                JSONObject cc = aux.getJSONObject("from");
+                oNew.put("from", cc.getString("agencia") + "-" + cc.getString("numeroConta"));
 
-            cc = aux.getJSONObject("to");
-            oNew.put("to", cc.getString("agencia") + "-" + cc.getString("numeroConta"));
+                cc = aux.getJSONObject("to");
+                oNew.put("to", cc.getString("agencia") + "-" + cc.getString("numeroConta"));
 
-            oNew.put("tipo", aux.getString("tipoDesc"));
-            oNew.put("valMovimentado", aux.getDouble("valMovimentado"));
-            oNew.put("dtMovimento", aux.getString("dtMovimento"));
+                oNew.put("tipo", aux.getString("tipoDesc"));
+                oNew.put("valMovimentado", aux.getDouble("valMovimentado"));
+                oNew.put("dtMovimento", aux.getString("dtMovimento"));
 
-            data.add(oNew);
-        });
+                data.add(oNew);
+            });
+        }
+        
         
     }
     

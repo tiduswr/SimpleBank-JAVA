@@ -99,6 +99,7 @@ public class ClienteDAO implements CRUD<Cliente, String>{
             closeStatementAndResultSet(rs, st);
         } catch (SQLException ex) {
             SQL_ERROR_LOG.message("Error in read Pessoa!", ex);
+            return -1;
         }
         return -1;
     }

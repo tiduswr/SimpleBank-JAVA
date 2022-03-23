@@ -237,8 +237,13 @@ public class TransacaoDAO implements CRUD<Transacao, Long>{
                 
                 Transacao o = new Transacao();
                 
-                o.setFrom(buildConta(rs));
-                o.setTo(buildConta(rs));
+                ContaDAO dao = new ContaDAO(con);
+                
+                Conta cc = dao.read(rs.getLong("idContaOrigem"));
+                o.setFrom(cc);
+                
+                cc = dao.read(rs.getLong("idContaDestino"));
+                o.setTo(cc);
 
                 o.setIdTransacao(rs.getLong("idTransacao"));
                 o.setValMovimentado(rs.getDouble("valMovimentado"));
@@ -255,8 +260,6 @@ public class TransacaoDAO implements CRUD<Transacao, Long>{
             return l;
         } catch (SQLException ex) {
             SQL_ERROR_LOG.message("Error in create list of Transacoes!", ex);
-        } catch (ParseException ex) {
-            SQL_ERROR_LOG.message("Error in read Transacao!(Parse Data Criação Conta)", null);
         }
         return null;
     }

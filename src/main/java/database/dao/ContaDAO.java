@@ -122,6 +122,37 @@ public class ContaDAO implements CRUD<Conta, String>{
         return null;
     }
 
+    public Conta read(long id) {
+        String sql = "SELECT * FROM contas "
+                    + "INNER JOIN pessoas "
+                    + "ON pessoas.id = contas.idPessoa "
+                    + "WHERE idConta = " + String.valueOf(id);
+
+        try {
+            Statement st = con.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            if(rs != null && !rs.isClosed()){
+                Conta o = new Conta();
+
+                o.setAgencia(rs.getString("agencia"));
+                o.setNumeroConta(rs.getString("numeroConta"));
+                o.setDateCreation(new SimpleDateFormat("dd/MM/yyyy").parse(rs.getString("dtCreation")));
+                o.setActive(rs.getBoolean("active"));
+                o.setSaldo(rs.getDouble("saldo"));
+                o.setTitular(rs.getString("cpf"));
+                o.setIdConta(rs.getLong("idConta"));
+                closeStatementAndResultSet(rs, st);
+                return o;
+
+            }
+        } catch (SQLException ex) {
+            SQL_ERROR_LOG.message("Error in read Conta!", ex);
+        } catch (ParseException ex) {
+            SQL_ERROR_LOG.message("Error in read Conta! (Parse Exception)", null);
+        }
+        return null;
+    }
+    
     @Override
     public boolean update(Conta dados) {
         String sql = "UPDATE contas SET agencia='<T>', numeroConta='<T>', dtCreation='<T>', saldo=<T>, idPessoa=<T>, active=<T>"

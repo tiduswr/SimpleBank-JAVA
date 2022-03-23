@@ -84,11 +84,11 @@ public class AdministradorDAOTest {
         System.out.println("    - Trying to update " + cl.getName() + " on database...");
         
         Administrador adm = dao.read("999.999.999-99");
-        System.out.println("Administrador old cpf -> " + adm.getCpf());
-        adm.setCpf("888.888.888-88");
+        System.out.println("Administrador old name -> " + adm.getNome());
+        adm.setNome("Nome de Teste");
         Assertions.assertTrue(dao.update(adm));
-        adm = dao.read("888.888.888-88");
-        System.out.println("Administrador new cpf -> " + adm.getCpf());
+        adm = dao.read("999.999.999-99");
+        System.out.println("Administrador novo name -> " + adm.getNome());
         
         System.out.println("    - Data updated in database!");
     }
@@ -113,7 +113,7 @@ public class AdministradorDAOTest {
     public void testDelete() {
         System.out.println("    - Trying to delete " + cl.getName() + " on database...");
         
-        Assertions.assertTrue(dao.delete("888.888.888-88"));
+        Assertions.assertTrue(dao.delete("999.999.999-99"));
         Assertions.assertTrue(dao.delete("777.777.777-77"));
         
         System.out.println("    - Data deleted in database!");

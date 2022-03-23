@@ -232,7 +232,7 @@ public class ParseHelper {
         JSONObject j = new JSONObject(json);
         
         if(j.has(field)){
-            String test = j.get(field).toString();
+            String test = j.get(field).toString().replace(".", ",");
             
             if(test != null){
                 if(!RegexValidation.TestString(RegexValidation.StandardRegexString.DECIMAL_VALUE, test)){

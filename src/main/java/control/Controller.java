@@ -318,21 +318,24 @@ public class Controller {
     public String listTransacao(long... idsOrigem){
         TransacaoDAO dao = new TransacaoDAO(this.con.getConnection());
         ArrayList<Transacao> l;
-        if(idsOrigem[0] == -1){
-            l = dao.list();
-        }else{
-            l = dao.list(idsOrigem);
+        if(idsOrigem.length > 0){
+            if(idsOrigem[0] == -1){
+                l = dao.list();
+            }else{
+                l = dao.list(idsOrigem);
+            }
+
+            if(l != null){
+                JSONArray jList = new JSONArray();
+                l.forEach(e -> {
+                    jList.put(e.toJson());
+                });
+                return jList.toString();
+            }else{
+                return null;
+            }
         }
-        
-        if(l != null){
-            JSONArray jList = new JSONArray();
-            l.forEach(e -> {
-                jList.put(e.toJson());
-            });
-            return jList.toString();
-        }else{
-            return null;
-        }
+        return null;
     }
     
     public String updateAdministrador(String json){
