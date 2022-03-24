@@ -269,6 +269,7 @@ public class GerirConta extends javax.swing.JPanel {
         if(validateFields()){
             JSONObject obj = new JSONObject(toJson());
             JSONObject response = null;
+            
             switch(obj.getString("operacao")){
                 case "Saque":
                     response = new JSONObject(con.sacarConta(obj.getString("contaOrigem"), obj.getDouble("valor")));
@@ -295,7 +296,9 @@ public class GerirConta extends javax.swing.JPanel {
                                                 Notification.Location.BOTTOM_RIGHT, response.getString("message"));
                 n.showNotification();
             }else{
-                
+                Notification n = new Notification(MenuCentral.getFrame(), Notification.Type.WARNING, 
+                                                Notification.Location.BOTTOM_RIGHT, "Sem resposta do Servidor!");
+                n.showNotification();
             }
             
         }

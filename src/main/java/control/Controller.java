@@ -436,7 +436,7 @@ public class Controller {
         ContaDAO dao = new ContaDAO(this.con.getConnection());
         Conta cc = dao.read(contacompleta);
         
-        if(cc != null){
+        if(cc != null && cc.isActive()){
             if(cc.depositar(value) && dao.update(cc)){
                 
                 TransacaoDAO daot = new TransacaoDAO(this.con.getConnection());
@@ -458,7 +458,7 @@ public class Controller {
                         "error", "none").toJson().toString();
             }
         }else{
-            return new Message("Deposito falhou!", "A conta para depósito não foi encontrado!", 
+            return new Message("Deposito falhou!", "A conta para depósito não foi encontrado ou está inativa!", 
                         "error", "none").toJson().toString(); 
         }
         
@@ -468,7 +468,7 @@ public class Controller {
         ContaDAO dao = new ContaDAO(this.con.getConnection());
         Conta cc = dao.read(contacompleta);
         
-        if(cc != null){
+        if(cc != null && cc.isActive()){
             if(cc.sacar(value) && dao.update(cc)){
                 TransacaoDAO daot = new TransacaoDAO(this.con.getConnection());
                 Transacao t = new Transacao();
@@ -481,14 +481,14 @@ public class Controller {
                 t.setTipo(Transacao.TipoTransacao.SAQUE);
                 
                 daot.create(t);
-                return new Message("Saque concluido!", "O depósito foi feito sem erros!", 
+                return new Message("Saque concluido!", "O saque foi feito sem erros!", 
                         "noterror", "none").toJson().toString(); 
             }else{
                 return new Message("Saque falhou!", "Você não tem saldo suficiente!", 
                         "error", "none").toJson().toString();
             }
         }else{
-            return new Message("Saque falhou!", "A conta para depósito não foi encontrado!", 
+            return new Message("Saque falhou!", "A conta para saque não foi encontrado ou está inativa!", 
                         "error", "none").toJson().toString(); 
         }
         
@@ -499,7 +499,8 @@ public class Controller {
         Conta co = dao.read(contacompletaOrigem);
         Conta cd = dao.read(contacompletaDestino);
         
-        if(co != null && cd != null){
+        
+        if((co != null && cd != null) && (co.isActive() && cd.isActive())){
             if(co.transferir(value, cd)){
                 if(dao.update(co) && dao.update(cd)){
                     TransacaoDAO daot = new TransacaoDAO(this.con.getConnection());
@@ -524,10 +525,9 @@ public class Controller {
                         "error", "none").toJson().toString();
             }
         }else{
-            return new Message("Transferência falhou!", "As contas para transferencia não foram encontradas!", 
+            return new Message("Transferência falhou!", "As contas para transferencia não foram encontradas ou estão inativas!", 
                         "error", "none").toJson().toString(); 
         }
-        
     }
     
 }
